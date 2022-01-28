@@ -1,0 +1,118 @@
+
+gorilla_monkey.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body_01
+  rotate: true
+  xy: 2, 29
+  size: 97, 135
+  orig: 97, 135
+  offset: 0, 0
+  index: -1
+body_02
+  rotate: false
+  xy: 321, 97
+  size: 53, 29
+  orig: 53, 29
+  offset: 0, 0
+  index: -1
+ear
+  rotate: true
+  xy: 192, 69
+  size: 17, 20
+  orig: 17, 20
+  offset: 0, 0
+  index: -1
+eye_l_01
+  rotate: false
+  xy: 169, 17
+  size: 15, 16
+  orig: 15, 16
+  offset: 0, 0
+  index: -1
+eye_l_02
+  rotate: false
+  xy: 79, 22
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+eye_r_01
+  rotate: false
+  xy: 53, 7
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+eye_r_02
+  rotate: false
+  xy: 321, 89
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
+foot_l
+  rotate: false
+  xy: 417, 100
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+foot_r
+  rotate: false
+  xy: 139, 2
+  size: 28, 31
+  orig: 28, 31
+  offset: 0, 0
+  index: -1
+hand_l
+  rotate: true
+  xy: 261, 88
+  size: 38, 58
+  orig: 38, 58
+  offset: 0, 0
+  index: -1
+hand_r
+  rotate: true
+  xy: 192, 88
+  size: 38, 67
+  orig: 38, 67
+  offset: 0, 0
+  index: -1
+head_01
+  rotate: false
+  xy: 139, 68
+  size: 51, 58
+  orig: 51, 58
+  offset: 0, 0
+  index: -1
+head_02
+  rotate: false
+  xy: 2, 6
+  size: 49, 21
+  orig: 49, 21
+  offset: 0, 0
+  index: -1
+moues_02
+  rotate: false
+  xy: 376, 97
+  size: 39, 29
+  orig: 39, 29
+  offset: 0, 0
+  index: -1
+mouse_01
+  rotate: false
+  xy: 139, 35
+  size: 46, 31
+  orig: 46, 31
+  offset: 0, 0
+  index: -1
+no
+  rotate: false
+  xy: 440, 118
+  size: 14, 8
+  orig: 14, 8
+  offset: 0, 0
+  index: -1

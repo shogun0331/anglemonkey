@@ -1,0 +1,13 @@
+
+baboon_monkey_ef.png
+size: 128,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+shout_01
+  rotate: false
+  xy: 2, 2
+  size: 79, 172
+  orig: 79, 172
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,104 @@
+
+bg_01.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bg02
+  rotate: false
+  xy: 2, 1284
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+bg02_02
+  rotate: true
+  xy: 1284, 724
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+l_bg01
+  rotate: true
+  xy: 2, 2
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+l_bg01_02
+  rotate: false
+  xy: 724, 2
+  size: 1280, 720
+  orig: 1280, 720
+  offset: 0, 0
+  index: -1
+l_leaf01
+  rotate: false
+  xy: 724, 1143
+  size: 156, 139
+  orig: 156, 139
+  offset: 0, 0
+  index: -1
+l_leaf01_02
+  rotate: true
+  xy: 882, 1126
+  size: 156, 139
+  orig: 156, 139
+  offset: 0, 0
+  index: -1
+l_leaf02
+  rotate: true
+  xy: 1133, 1204
+  size: 78, 82
+  orig: 78, 82
+  offset: 0, 0
+  index: -1
+l_leaf02_02
+  rotate: false
+  xy: 854, 912
+  size: 78, 82
+  orig: 78, 82
+  offset: 0, 0
+  index: -1
+r_leaf01
+  rotate: false
+  xy: 1023, 1133
+  size: 117, 66
+  orig: 117, 66
+  offset: 0, 0
+  index: -1
+r_leaf01_02
+  rotate: true
+  xy: 1002, 897
+  size: 117, 66
+  orig: 117, 66
+  offset: 0, 0
+  index: -1
+r_leaf02
+  rotate: false
+  xy: 1002, 1016
+  size: 81, 108
+  orig: 81, 108
+  offset: 0, 0
+  index: -1
+r_leaf02_02
+  rotate: true
+  xy: 1023, 1201
+  size: 81, 108
+  orig: 81, 108
+  offset: 0, 0
+  index: -1
+r_leaf03
+  rotate: true
+  xy: 724, 995
+  size: 146, 128
+  orig: 146, 128
+  offset: 0, 0
+  index: -1
+r_leaf03_02
+  rotate: false
+  xy: 854, 996
+  size: 146, 128
+  orig: 146, 128
+  offset: 0, 0
+  index: -1

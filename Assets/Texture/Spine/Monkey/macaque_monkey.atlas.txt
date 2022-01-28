@@ -1,0 +1,125 @@
+
+macaque_monkey.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: true
+  xy: 2, 25
+  size: 101, 128
+  orig: 101, 128
+  offset: 0, 0
+  index: -1
+ear
+  rotate: true
+  xy: 80, 2
+  size: 21, 20
+  orig: 21, 20
+  offset: 0, 0
+  index: -1
+eye_l_01
+  rotate: false
+  xy: 132, 19
+  size: 19, 18
+  orig: 19, 18
+  offset: 0, 0
+  index: -1
+eye_l_02
+  rotate: false
+  xy: 249, 115
+  size: 5, 4
+  orig: 5, 4
+  offset: 0, 0
+  index: -1
+eye_l_03
+  rotate: false
+  xy: 102, 2
+  size: 18, 6
+  orig: 18, 6
+  offset: 0, 0
+  index: -1
+eye_r_01
+  rotate: false
+  xy: 192, 52
+  size: 25, 23
+  orig: 25, 23
+  offset: 0, 0
+  index: -1
+eye_r_02
+  rotate: false
+  xy: 249, 121
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+eye_r_03
+  rotate: false
+  xy: 192, 43
+  size: 23, 7
+  orig: 23, 7
+  offset: 0, 0
+  index: -1
+foot_l
+  rotate: true
+  xy: 2, 2
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+foot_r
+  rotate: false
+  xy: 162, 40
+  size: 28, 31
+  orig: 28, 31
+  offset: 0, 0
+  index: -1
+hand_l
+  rotate: false
+  xy: 180, 77
+  size: 29, 49
+  orig: 29, 49
+  offset: 0, 0
+  index: -1
+hand_r
+  rotate: false
+  xy: 211, 77
+  size: 29, 49
+  orig: 29, 49
+  offset: 0, 0
+  index: -1
+head_01
+  rotate: false
+  xy: 132, 73
+  size: 46, 53
+  orig: 46, 53
+  offset: 0, 0
+  index: -1
+head_03
+  rotate: false
+  xy: 30, 6
+  size: 48, 17
+  orig: 48, 17
+  offset: 0, 0
+  index: -1
+mouse
+  rotate: true
+  xy: 242, 97
+  size: 29, 5
+  orig: 29, 5
+  offset: 0, 0
+  index: -1
+mouse_02
+  rotate: false
+  xy: 102, 10
+  size: 28, 13
+  orig: 28, 13
+  offset: 0, 0
+  index: -1
+tail
+  rotate: false
+  xy: 132, 39
+  size: 28, 32
+  orig: 28, 32
+  offset: 0, 0
+  index: -1

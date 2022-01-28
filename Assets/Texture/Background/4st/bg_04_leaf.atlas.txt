@@ -1,0 +1,20 @@
+
+bg_04_leaf.png
+size: 256,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ingame_bg_ani_leaf_01
+  rotate: false
+  xy: 2, 2
+  size: 58, 56
+  orig: 58, 56
+  offset: 0, 0
+  index: -1
+ingame_bg_ani_leaf_04
+  rotate: true
+  xy: 62, 19
+  size: 39, 71
+  orig: 39, 71
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,27 @@
+
+ingame_star.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ingame_star_02
+  rotate: false
+  xy: 70, 49
+  size: 60, 67
+  orig: 60, 67
+  offset: 0, 0
+  index: -1
+star_04
+  rotate: false
+  xy: 2, 44
+  size: 66, 72
+  orig: 66, 72
+  offset: 0, 0
+  index: -1
+star_ef_01
+  rotate: false
+  xy: 2, 2
+  size: 12, 40
+  orig: 12, 40
+  offset: 0, 0
+  index: -1

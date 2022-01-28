@@ -1,0 +1,90 @@
+
+butterfly.png
+size: 256,32
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Shape_01
+  rotate: false
+  xy: 165, 23
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+Shape_02
+  rotate: false
+  xy: 165, 14
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+Shape_03
+  rotate: false
+  xy: 169, 23
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+body_01
+  rotate: false
+  xy: 152, 22
+  size: 11, 8
+  orig: 11, 8
+  offset: 0, 0
+  index: -1
+body_02
+  rotate: false
+  xy: 152, 12
+  size: 11, 8
+  orig: 11, 8
+  offset: 0, 0
+  index: -1
+body_03
+  rotate: false
+  xy: 152, 2
+  size: 11, 8
+  orig: 11, 8
+  offset: 0, 0
+  index: -1
+wing_l_01
+  rotate: false
+  xy: 2, 2
+  size: 23, 28
+  orig: 23, 28
+  offset: 0, 0
+  index: -1
+wing_l_02
+  rotate: false
+  xy: 27, 2
+  size: 23, 28
+  orig: 23, 28
+  offset: 0, 0
+  index: -1
+wing_l_03
+  rotate: false
+  xy: 52, 2
+  size: 23, 28
+  orig: 23, 28
+  offset: 0, 0
+  index: -1
+wing_r_01
+  rotate: false
+  xy: 77, 3
+  size: 23, 27
+  orig: 23, 27
+  offset: 0, 0
+  index: -1
+wing_r_02
+  rotate: false
+  xy: 102, 3
+  size: 23, 27
+  orig: 23, 27
+  offset: 0, 0
+  index: -1
+wing_r_03
+  rotate: false
+  xy: 127, 3
+  size: 23, 27
+  orig: 23, 27
+  offset: 0, 0
+  index: -1

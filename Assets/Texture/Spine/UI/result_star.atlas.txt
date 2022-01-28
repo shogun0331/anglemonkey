@@ -1,0 +1,41 @@
+
+result_star.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ef_0001
+  rotate: false
+  xy: 298, 2
+  size: 106, 106
+  orig: 106, 106
+  offset: 0, 0
+  index: -1
+ef_0002
+  rotate: false
+  xy: 2, 28
+  size: 15, 51
+  orig: 15, 51
+  offset: 0, 0
+  index: -1
+star_000
+  rotate: true
+  xy: 298, 110
+  size: 135, 150
+  orig: 135, 150
+  offset: 0, 0
+  index: -1
+star_001
+  rotate: false
+  xy: 159, 92
+  size: 137, 153
+  orig: 137, 153
+  offset: 0, 0
+  index: -1
+star_002
+  rotate: false
+  xy: 2, 81
+  size: 155, 164
+  orig: 155, 164
+  offset: 0, 0
+  index: -1

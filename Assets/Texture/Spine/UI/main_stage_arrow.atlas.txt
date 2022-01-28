@@ -1,0 +1,13 @@
+
+main_stage_arrow.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+main_arrow
+  rotate: false
+  xy: 2, 2
+  size: 64, 87
+  orig: 64, 87
+  offset: 0, 0
+  index: -1

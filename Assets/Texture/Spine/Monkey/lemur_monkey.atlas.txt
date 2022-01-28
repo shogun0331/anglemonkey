@@ -1,0 +1,146 @@
+
+lemur_monkey.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: true
+  xy: 275, 92
+  size: 104, 121
+  orig: 104, 121
+  offset: 0, 0
+  index: -1
+ear_l
+  rotate: true
+  xy: 156, 16
+  size: 23, 39
+  orig: 23, 39
+  offset: 0, 0
+  index: -1
+ear_r
+  rotate: false
+  xy: 398, 155
+  size: 41, 41
+  orig: 41, 41
+  offset: 0, 0
+  index: -1
+ef_01
+  rotate: false
+  xy: 2, 103
+  size: 271, 151
+  orig: 271, 151
+  offset: 0, 0
+  index: -1
+ef_02
+  rotate: false
+  xy: 275, 198
+  size: 186, 56
+  orig: 186, 56
+  offset: 0, 0
+  index: -1
+ef_03
+  rotate: false
+  xy: 2, 41
+  size: 213, 60
+  orig: 213, 60
+  offset: 0, 0
+  index: -1
+eye
+  rotate: true
+  xy: 217, 42
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+eye_l_01
+  rotate: false
+  xy: 197, 14
+  size: 23, 25
+  orig: 23, 25
+  offset: 0, 0
+  index: -1
+eye_l_02
+  rotate: false
+  xy: 430, 148
+  size: 4, 5
+  orig: 4, 5
+  offset: 0, 0
+  index: -1
+eye_l_03
+  rotate: true
+  xy: 266, 81
+  size: 20, 7
+  orig: 20, 7
+  offset: 0, 0
+  index: -1
+eye_r_01
+  rotate: true
+  xy: 441, 163
+  size: 33, 30
+  orig: 33, 30
+  offset: 0, 0
+  index: -1
+eye_r_02
+  rotate: false
+  xy: 398, 95
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
+eye_r_03
+  rotate: true
+  xy: 257, 70
+  size: 31, 7
+  orig: 31, 7
+  offset: 0, 0
+  index: -1
+foot_l
+  rotate: false
+  xy: 222, 14
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+foot_r
+  rotate: false
+  xy: 473, 166
+  size: 29, 31
+  orig: 29, 31
+  offset: 0, 0
+  index: -1
+hand_l
+  rotate: false
+  xy: 398, 103
+  size: 30, 50
+  orig: 30, 50
+  offset: 0, 0
+  index: -1
+hand_r
+  rotate: false
+  xy: 463, 199
+  size: 34, 55
+  orig: 34, 55
+  offset: 0, 0
+  index: -1
+mouse_01
+  rotate: false
+  xy: 245, 17
+  size: 22, 23
+  orig: 22, 23
+  offset: 0, 0
+  index: -1
+mouse_02
+  rotate: true
+  xy: 2, 2
+  size: 13, 8
+  orig: 13, 8
+  offset: 0, 0
+  index: -1
+tail
+  rotate: true
+  xy: 2, 17
+  size: 22, 152
+  orig: 22, 152
+  offset: 0, 0
+  index: -1

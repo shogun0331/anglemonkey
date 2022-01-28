@@ -1,0 +1,111 @@
+
+gold_monkey.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 2, 2
+  size: 97, 115
+  orig: 97, 115
+  offset: 0, 0
+  index: -1
+ear
+  rotate: false
+  xy: 297, 86
+  size: 32, 31
+  orig: 32, 31
+  offset: 0, 0
+  index: -1
+eye_l_01
+  rotate: false
+  xy: 416, 93
+  size: 22, 24
+  orig: 22, 24
+  offset: 0, 0
+  index: -1
+eye_l_02
+  rotate: false
+  xy: 440, 106
+  size: 9, 11
+  orig: 9, 11
+  offset: 0, 0
+  index: -1
+eye_l_03
+  rotate: false
+  xy: 184, 63
+  size: 20, 8
+  orig: 20, 8
+  offset: 0, 0
+  index: -1
+eye_r_01
+  rotate: false
+  xy: 362, 90
+  size: 29, 27
+  orig: 29, 27
+  offset: 0, 0
+  index: -1
+eye_r_02
+  rotate: false
+  xy: 280, 85
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+eye_r_03
+  rotate: true
+  xy: 169, 27
+  size: 27, 8
+  orig: 27, 8
+  offset: 0, 0
+  index: -1
+foot_l
+  rotate: false
+  xy: 393, 91
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+foot_r
+  rotate: false
+  xy: 331, 86
+  size: 29, 31
+  orig: 29, 31
+  offset: 0, 0
+  index: -1
+hand_l
+  rotate: true
+  xy: 234, 76
+  size: 23, 44
+  orig: 23, 44
+  offset: 0, 0
+  index: -1
+hand_r
+  rotate: true
+  xy: 184, 73
+  size: 26, 48
+  orig: 26, 48
+  offset: 0, 0
+  index: -1
+head_01
+  rotate: false
+  xy: 101, 5
+  size: 66, 49
+  orig: 66, 49
+  offset: 0, 0
+  index: -1
+head_02
+  rotate: false
+  xy: 101, 56
+  size: 81, 61
+  orig: 81, 61
+  offset: 0, 0
+  index: -1
+tail
+  rotate: true
+  xy: 184, 101
+  size: 16, 111
+  orig: 16, 111
+  offset: 0, 0
+  index: -1

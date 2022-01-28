@@ -1,0 +1,48 @@
+
+gold_monkey_ef.png
+size: 64,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bust_01
+  rotate: false
+  xy: 2, 23
+  size: 38, 37
+  orig: 38, 37
+  offset: 0, 0
+  index: -1
+bust_02
+  rotate: false
+  xy: 2, 2
+  size: 22, 19
+  orig: 22, 19
+  offset: 0, 0
+  index: -1
+bust_03
+  rotate: false
+  xy: 42, 41
+  size: 20, 19
+  orig: 20, 19
+  offset: 0, 0
+  index: -1
+bust_04
+  rotate: false
+  xy: 26, 6
+  size: 16, 15
+  orig: 16, 15
+  offset: 0, 0
+  index: -1
+bust_05
+  rotate: true
+  xy: 42, 23
+  size: 16, 18
+  orig: 16, 18
+  offset: 0, 0
+  index: -1
+bust_06
+  rotate: false
+  xy: 44, 15
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1

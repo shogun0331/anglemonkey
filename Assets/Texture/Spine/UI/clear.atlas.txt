@@ -1,0 +1,83 @@
+
+clear.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ingame_clear_text
+  rotate: false
+  xy: 2, 132
+  size: 480, 120
+  orig: 480, 120
+  offset: 0, 0
+  index: -1
+smoke_1_01
+  rotate: true
+  xy: 484, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_03
+  rotate: true
+  xy: 632, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_04
+  rotate: true
+  xy: 780, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_06
+  rotate: true
+  xy: 928, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_08
+  rotate: true
+  xy: 1076, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_10
+  rotate: true
+  xy: 1224, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_12
+  rotate: true
+  xy: 1372, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_14
+  rotate: true
+  xy: 1520, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_16
+  rotate: true
+  xy: 1668, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
+smoke_1_18
+  rotate: true
+  xy: 1816, 2
+  size: 250, 146
+  orig: 250, 146
+  offset: 0, 0
+  index: -1
