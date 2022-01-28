@@ -15,12 +15,18 @@ public class MapTool : MonoBehaviour
     Transform _bananaGroup;
     Transform _springGroup;
 
+    const string PATH_BRICK = "PoolingObjects/Game/Brick";
+    const string PATH_GROUND = "PoolingObjects/Game/Ground";
+    const string PATH_BANANA = "PoolingObjects/Game/Banana";
+    const string PATH_SHOOTER = "PoolingObjects/Game/Shooter/Shooter";
+
     const string TYPE_BG = "BG";
     const string TYPE_GROUND = "Ground";
     const string TYPE_Monkey = "Monkey";
     const string TYPE_BRICK = "Brick";
     const string TYPE_BANANA = "Banana";
     const string TYPE_SPRING = "Spring";
+    const string TYPE_SHOOTER = "Shooter";
     const string TYPE_HINGE = "HingeJoint2D";
 
     public Vector2 MapScale;
@@ -30,7 +36,6 @@ public class MapTool : MonoBehaviour
     private void Start()
     {
         Load(1);
-
     }
 
     public void Load(int mapId)
@@ -56,9 +61,10 @@ public class MapTool : MonoBehaviour
         _bananaGroup.SetParent(transform);
         _springGroup.SetParent(transform);
 
-        GameObject[] brickModels = Resources.LoadAll<GameObject>("PoolingObjects/Game/Brick");
-        GameObject[] groundModels = Resources.LoadAll<GameObject>("PoolingObjects/Game/Ground");
-        GameObject[] bananaModels = Resources.LoadAll<GameObject>("PoolingObjects/Game/Banana");
+        GameObject[] brickModels = Resources.LoadAll<GameObject>(PATH_BRICK);
+        GameObject[] groundModels = Resources.LoadAll<GameObject>(PATH_GROUND);
+        GameObject[] bananaModels = Resources.LoadAll<GameObject>(PATH_BANANA);
+        
 
         for (int i = 0; i < groundModels.Length; ++i)
         {
@@ -162,6 +168,9 @@ public class MapTool : MonoBehaviour
                     oj.transform.position = position;
                     oj.transform.rotation = rotation;
                     oj.transform.localScale = scale;
+                    if (oj.GetComponent<Rigidbody2D>() != null)
+                        oj.GetComponent<Rigidbody2D>().isKinematic = true;
+
                     _gameObjectList.Add(oj);
                     break;
 
@@ -227,6 +236,27 @@ public class MapTool : MonoBehaviour
                     }
 
                     break;
+                case TYPE_SHOOTER:
+                    position = PaserVec3(item.Position);
+
+                    GameObject tmp = Resources.Load(PATH_SHOOTER) as GameObject;
+
+                    if (GB.ObjectPooling.I.GetRemainingUses(tmp.name) > 0)
+                    {
+                        oj = GB.ObjectPooling.I.Import(tmp.name);
+                    }
+                    else
+                    {
+                        oj = Instantiate(tmp);
+                        GB.ObjectPooling.I.Registration(tmp.name, oj, true);
+                    }
+
+                    oj.transform.SetParent(transform);
+                    oj.transform.position = position;
+                    
+                    _gameObjectList.Add(oj);
+
+                    break;
 
                 case TYPE_HINGE:
                     ModelHinge hinge = JsonUtility.FromJson<ModelHinge>(item.Json);
@@ -285,8 +315,6 @@ public class MapTool : MonoBehaviour
         for (int i = 0; i < _gameObjectList.Count; ++i)
             GB.ObjectPooling.I.Destroy(_gameObjectList[i]);
         
-
-
         if (_brickGroup != null) 
         Destroy(_brickGroup.gameObject);
         if (_bananaGroup != null)
@@ -297,8 +325,6 @@ public class MapTool : MonoBehaviour
             Destroy(_springGroup.gameObject);
         if (_monkeyGroup != null)
             Destroy(_monkeyGroup.gameObject);
-
-        //GB.ObjectPooling.I.DestroyAll();
 
         _gameObjectList.Clear();
         _dicBrickModels.Clear();
@@ -312,9 +338,9 @@ public class MapTool : MonoBehaviour
         int w = Screen.width, h = Screen.height;
         GUIStyle style = new GUIStyle();
         Rect rect = new Rect(0, 0, w, h * 2 / 100);
-        style.fontSize = h * 2 / 20;
+        style.fontSize = h * 2 / 40;
         style.normal.textColor = Color.red;
-        string text = "Map ID : " + _mapID;
+        string text = "Map ID : " + _mapID + "\nKey : W,A,S,D";
         GUI.Label(rect, text, style);
 
     }
@@ -328,26 +354,48 @@ public class MapTool : MonoBehaviour
             if (_isLoading) return;
             _tmpMapid++;
             if (_tmpMapid > 550)
-            {
                 _tmpMapid = 550;
-                return;
-            }
+          
             StartCoroutine(LoadMap(_tmpMapid));
         }
+
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (_isLoading) return;
+            _tmpMapid+= 10;
+            if (_tmpMapid > 550)
+                _tmpMapid = 550;
+                
+            
+            StartCoroutine(LoadMap(_tmpMapid));
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.A))
         {
             if (_isLoading) return;
             _tmpMapid--;
             if (_tmpMapid < 1)
-            {
                 _tmpMapid = 1;
-                return;
-            }
+                
+            
             StartCoroutine(LoadMap(_tmpMapid));
-
-
         }
+
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            if (_isLoading) return;
+            _tmpMapid-=10;
+            if (_tmpMapid < 1)
+                _tmpMapid = 1;
+                
+            
+            StartCoroutine(LoadMap(_tmpMapid));
+        }
+
     }
 
     bool _isLoading = false;
