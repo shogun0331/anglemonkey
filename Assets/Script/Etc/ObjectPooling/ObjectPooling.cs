@@ -12,7 +12,6 @@ namespace GB
             {
                 if (_i == null)
                 {
-
                     _i = GameObject.FindObjectOfType<GB.ObjectPooling>();
 
                     if (_i == null)

@@ -22,7 +22,7 @@ public class Baby : Monkey
     public override void Ready()
     {
         isUseSkill = false;
-        _rg.isKinematic = true;
+
         base.Ready();
     }
 
@@ -31,13 +31,17 @@ public class Baby : Monkey
         if (_rg == null) return;
         
         base.Shoot(power,direction);
-        _rg.isKinematic = false;
-        _rg.AddForce(direction * power);
+
     }
 
     public void UpdateComback(float dt)
     {
 
+    }
+
+    public override void UpdateRotation()
+    {
+        base.UpdateRotation();
     }
 
     public override void Comback()
@@ -46,10 +50,7 @@ public class Baby : Monkey
         base.Comback();
     }
 
-    void OnCollisionEnter(Collision coll)
-    {
-        ShootEnd();
-    }
+
 
     /// <summary>
     /// Baby는 스킬 없음
@@ -66,5 +67,13 @@ public class Baby : Monkey
         if (state == State.Shoot || state == State.Skill)
             _rg.AddForce(power * direction);
     }
+
+    public override void OnCollisionEnter2D(Collision2D coll)
+    {
+        base.OnCollisionEnter2D(coll);
+    }
+
+
+    
 
 }

@@ -62,6 +62,11 @@ public class Monkey : MonoBehaviour
     public virtual void Shoot(float power, Vector2 direction)
     {
         changeState(State.Shoot);
+        Rigidbody2D rg = GetComponent<Rigidbody2D>();
+        
+        Vector2 vel  = direction * power;
+        rg.isKinematic = false;
+        rg.velocity = vel;
     }
 
     public virtual void Idle()
@@ -76,6 +81,8 @@ public class Monkey : MonoBehaviour
 
     public virtual void Ready()
     {
+        Rigidbody2D rg = GetComponent<Rigidbody2D>();
+        rg.isKinematic = true;
         changeState(State.Ready);
     }
 
@@ -87,6 +94,21 @@ public class Monkey : MonoBehaviour
     public virtual void UpdateWind(float power, Vector2 direction)
     {
 
+    }
+
+
+    public virtual void UpdateRotation()
+    {
+        if (state != State.Shoot) return;
+
+        Rigidbody2D rg = GetComponent<Rigidbody2D>();
+        transform.right = rg.velocity;
+    }
+
+
+    public virtual void OnCollisionEnter2D(Collision2D coll)
+    {
+        ShootEnd();
     }
 
 

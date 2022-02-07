@@ -15,9 +15,98 @@ public class Brick : MonoBehaviour
     [SerializeField] float _hp;
     [SerializeField] int _score;
 
+    bool _isDestroy = false;
+    public bool IsDestroy { get { return _isDestroy; } }
+
+    SpriteRenderer _sprRenderModel = null;
+
+    Vector2 _orijinScale;
+
+    
+
+    private void Start()
+    {
+        _orijinScale = transform.localScale;
+
+        if (GetComponent<SpriteRenderer>() == null)
+        {
+
+            Transform child = transform.GetChild(0);
+            if (child != null)
+                _sprRenderModel = child.GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            _sprRenderModel = GetComponent<SpriteRenderer>();
+        }
+
+
+        if(_sprRenderModel != null)
+        _sprRenderModel.sortingOrder = 0;
+
+    }
+
+
+    private void playDestroy(float force)
+    {
+        StartCoroutine(playDestroyAction(force));
+    }
+
+
+    IEnumerator playDestroyAction(float force)
+    {
+
+        const int ACTION_MOVE_CENTER = 0;
+        const int ACTION_MOVE_DOWN = 1;
+
+
+        float dt = 0.02f;
+
+        if (_sprRenderModel != null)
+            _sprRenderModel.sortingOrder = 1;
+
+        Vector2 center = Camera.main.transform.position;
+        Vector2 targetScale = _orijinScale * 3f;
+        
+        float time = 0.0f;
+
+        int action = ACTION_MOVE_CENTER;
+
+        float speed = force * 0.01f;
+
+
+        while (true)
+        {
+            yield return new WaitForSeconds(dt);
+
+
+
+            time += dt + (speed * dt);
+
+            if (time > 0.8f)
+            {
+            }
+
+            if (time > 1.0f)
+            {
+
+                yield break;
+            }
+        }
+    }
+
     public void SetModel(ModelBrick brick)
     {
         _model = brick;
+        _isDestroy = false;
+
+        Transform child = transform.GetChild(0);
+        if (child != null)
+            _sprRenderModel = child.GetComponent<SpriteRenderer>();
+
+        if (_sprRenderModel != null)
+            _sprRenderModel.sortingOrder = 0;
+
     }
 
     /// <summary>
@@ -33,11 +122,35 @@ public class Brick : MonoBehaviour
         if (_model.AngularDrag != GetComponent<Rigidbody2D>().angularDrag) return true;
 
         return  false;
+
     }
 
 
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+
+        float magnitude = coll.relativeVelocity.sqrMagnitude;
+        float damage = magnitude * 0.1f;
+        float hp = _hp - damage;
 
 
+        if (hp < 0.0f)
+        {
+            //애니메이션 할지 결정
+            //if (Random.value > 0.8f)
+            //{
+            //    playDestroy(magnitude);
+            //}
+            //else
+            {
+                gameObject.SetActive(false);
+            }
+            
+            _isDestroy = true;
+        }
+        else
+            _hp -= damage;
+    }
 
 
 }

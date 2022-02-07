@@ -18,63 +18,101 @@ public class Shooter : MonoBehaviour
 
     float _maxBandLength = 2;
     Vector3 _dragPosition;
-    GameObject _bullet;
+    [SerializeField]    GameObject _bullet;
 
     [Header("Particle")]
     [SerializeField] ParticleSystem _shootParticle = null;
 
-    [Header("GuideLine")]
-    [SerializeField]  GuideLine _guideLine = null;
+    //[Header("GuideLine")]
+    //[SerializeField]  GuideLine _guideLine = null;
+    [Header("Dotted GuideLine")]
+    [SerializeField] DottedGuide _dottedGuide = null;
+
     int _maxGuidLineCount = 20;
 
-    [Range(5.0f,50.0f)]
-    [SerializeField] float _shootPower = 5.0f;
-      
+    [Range(1.0f,20.0f)]
+    [SerializeField] float _shootPower = 20.0f;
+    
+  
+
     private void Awake()
     {
+
         Init();
+
     }
+
+    [SerializeField] GameObject TestOBJ = null;
 
     private void drawGuideLine(Vector2 direction,float force)
     {
         //if (_bullet == null) return;
 
-        float mass = 1.0f;
+        //도착 높이 * 2 
+
+        //float mass = 1.0f;
+
+        //if (_bullet != null)
+        //    mass = _bullet.GetComponent<Rigidbody2D>().mass;
+
+        //force /= mass;
+        //Debug.Log(force);
+
+        //float dt = 0.02f;
+
+        //List <Vector2> list = new List<Vector2>();
+
+        //Vector2 tmp = direction * force;
+
+        //Vector2 p1 = (Vector2)_aimPoint.position;
+        //Vector2 p2 = p1 + tmp;
+        
+        //Vector3 p3 = p1 + tmp;
+        
+        
+
+        //if (TestOBJ == null)
+        //    TestOBJ = new GameObject("TestOBJ");
+
+        //TestOBJ.transform.position = new Vector2(p2.x  , p2.y  * 0.5f);
+
+        
+        ////TestOBJ.transform.position = p3;
+        //float time = 0.0f;
+        
+
+        //for (int i = 0; i < 100; ++i)
+        //{
+
+            
+        //    p1 = Vector2.MoveTowards(p1, p2, time);
+        //    //p2 = Vector2.MoveTowards(p2, p3, gravity * mass *  time * time);
+
+        //    time += dt;
+        //    list.Add(p1);
+        //}
+
+        ////Draw
+        //if (!_dottedGuide.IsReady)
+        //    _dottedGuide.Ready(list, DottedGuide.Color.Blue);
+        //else
+        //    _dottedGuide.DrawAnimation(list, dt, 0.2f);
 
 
-
-        float dt = 0.02f;
-
-        float weight = 1;
-        Vector2 gravity = Physics2D.gravity;
-        gravity.y -= weight;
-        List<Vector3> list = new List<Vector3>();
-        float time = 0;
-
-        for (int i = 0; i < _maxGuidLineCount; ++i)
-        {
-            Vector2 pos = (Vector2)_aimPoint.position + (direction * force * time) + 0.5f * gravity  * (time * time);
-            time += dt  * 3;
-
-            if( i > 0 )
-            list.Add(pos);
-
-        }
-
-        _guideLine.SetPositions(list);
-        _guideLine.UpdateOffset(dt);
+        //_guideLine.SetPositions(list);
+        //_guideLine.UpdateOffset(dt);
 
     }
 
     private void clearGuideLine()
     {
-        //_guideLine.Clear();
+        //_dottedGuide.Clear();
     }
 
     /// <summary>
     /// 초기 상태
     /// </summary>
-    private void Init()
+    public void Init()
     {
         _leftBandLine.positionCount = 2;
         _rightBandLine.positionCount = 2;
@@ -98,12 +136,18 @@ public class Shooter : MonoBehaviour
     /// 장전
     /// </summary>
     /// <param name="bullet">총알 장전</param>
-    private void SetReady(GameObject bullet)
+    public void SetReady(GameObject bullet)
     {
         _bullet = bullet;
-        _bullet.transform.parent = _aimPoint;
+        _bullet.transform.SetParent(null);
+        _bullet.transform.position = Vector3.zero;
+        _bullet.transform.localScale = Vector3.one;
         _bullet.transform.rotation = Quaternion.identity;
-        _bullet.transform.localPosition = new Vector2(0.5f, -0.5f);
+
+        _bullet.transform.SetParent(_aimPoint);
+        _bullet.transform.localPosition = Vector3.zero;
+        _bullet.transform.localPosition = new Vector2(0.2f, -0.08f);
+        _bullet.SetActive(true);
 
         state = State.Ready;
     }
@@ -124,39 +168,72 @@ public class Shooter : MonoBehaviour
         if (_imgAimBand.activeSelf == false)
             _imgAimBand.SetActive(true);
 
+        if (_bullet != null)
+        {
+            _bullet.transform.localRotation = Quaternion.identity;
+            _bullet.transform.SetParent(_imgAimBand.transform);
+            _bullet.transform.localPosition = new Vector3(0.3f, 0.1f, 0.0f);
 
+        }
+
+        _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, _maxBandLength);
 
         //Shooter 바디에 가까워질수록 각도는 줄어듬
-        //float checkAngleX = 0.6f;
-        //if (point.y < _aimPoint.position.y && point.x < checkAngleX && point.x > -checkAngleX)
-        //{
-        //    float minLength = 0.5f;
-        //    float length =  minLength * Mathf.Abs(point.x) / minLength;
-        //    if (length < minLength)  length = minLength;
-        //    _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point, length);
-        //}
-        //else
-        //{
-        //    _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point, _maxBandLength);
-        //}
+        //float checkAngleX =   7.5f;
         
-        //_dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point, _maxBandLength);
-        //dragPos = _dragPosition;
+        //if (_dragPosition.y < _aimPoint.position.y
+        //    && _dragPosition.x < _aimPoint.position.x + checkAngleX
+        //    && _dragPosition.x > _aimPoint.position.x - checkAngleX)
+        //{
+        
+        //    float minLength = 0.43f;
+
+            
+
+        //    //0~1
+        //    float distPer = Mathf.Abs(_dragPosition.x) / checkAngleX;
+
+        //    float length = minLength * distPer;
+
+            
+        //    Debug.Log(distPer);
+
+        //    //float minX = 0.2f;
+        //    //if (length < minX) length = minLength;
+
+        //    _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, length);
+        //}
+ 
+
+        //_dragPosition = point;
+        //_dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, _maxBandLength);
+        
         //연출
         //=====================================================================
 
+
         //밴드 끝 부분 에임 포인트 회전
         Vector2 dir = (_aimPoint.position - point);
-        
-        //float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        //Quaternion axis = Quaternion.AngleAxis(angle , Vector3.forward);
-        //_imgAimBand.transform.rotation = axis;
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        Quaternion axis = Quaternion.AngleAxis(angle, Vector3.forward);
+        _imgAimBand.transform.rotation = axis;
+
+        if (_bullet != null)
+        {
+            if (_dragPosition.x > _aimPoint.position.x)
+                _bullet.transform.localScale = new Vector3(1.0f, -1.0f, 1.0f);
+            else
+                _bullet.transform.localScale = Vector3.one;
+        }
+
         //=====================================================================
+        _imgAimBand.transform.position = _dragPosition;
 
-        _imgAimBand.transform.position = point;
-
-        _leftBandLine.SetPosition(1, point);
-        _rightBandLine.SetPosition(1, point);
+        _leftBandLine.SetPosition(0,_leftBandLine.transform.position);
+        _leftBandLine.SetPosition(1, _dragPosition);
+        _rightBandLine.SetPosition(0, _rightBandLine.transform.position);
+        _rightBandLine.SetPosition(1, _dragPosition);
 
         drawGuideLine(dir.normalized, GetPower() * _shootPower);
         
@@ -175,6 +252,13 @@ public class Shooter : MonoBehaviour
             _shootParticle.Play();
         }
 
+        if (_bullet != null)
+        {
+            _bullet.transform.position = _aimPoint.transform.position;
+            _bullet.transform.SetParent(null);
+            _bullet.GetComponent<Monkey>().Shoot(GetPower() * _shootPower , GetDirection());
+        }
+        
         Init();
     }
 
@@ -207,8 +291,34 @@ public class Shooter : MonoBehaviour
     /// <summary>
     /// 테스트
     /// </summary>
-    private void FixedUpdate()
+    private void Update()
     {
+
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            Debug.Log("Test Z");
+            isTest = true;
+            if (_bullet == null)
+            {
+
+                if (GB.ObjectPooling.I.GetRemainingUses("BABY") > 0)
+                {
+                    GameObject baby = GB.ObjectPooling.I.Import("BABY");
+                    SetReady(baby);
+
+                }
+                else
+                {
+                    GameObject baby = Resources.Load<GameObject>(Def.PATH_MONKEY_BABY);
+                    GameObject oj = Instantiate(baby);
+                    SetReady(oj);
+                    GB.ObjectPooling.I.Registration("BABY", oj, true);
+                }
+            }
+
+        }
+
+
         if (Input.GetMouseButton(0))
         {
             Vector3 mousePosition = Input.mousePosition;
@@ -223,12 +333,22 @@ public class Shooter : MonoBehaviour
             }
             
             SetAming(mousePosition);
+
+
         }
 
         if (Input.GetMouseButtonUp(0))
         {
+
+            if (isTest)
+            {
+                //GB.ObjectPooling.I.Destroy(_bullet);
+            }
+
             Shoot();
         }
+
+        
 
 
     }

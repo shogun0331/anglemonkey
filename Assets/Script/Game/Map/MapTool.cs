@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class MapTool : MonoBehaviour
 {
+
+    
     //재질   ,  모양 순서대로  
     Dictionary<int, List<Brick>> _dicBrickModels = new Dictionary<int, List<Brick>>();
     Dictionary<int, Ground> _dicGroundModels = new Dictionary<int, Ground>();
+
     [SerializeField] List<GameObject> _gameObjectList = new List<GameObject>();
+    public GameObject[] GameObjectList { get { return _gameObjectList.ToArray(); } }
 
     Transform _brickGroup;
     Transform _groundGroup;
@@ -19,7 +23,7 @@ public class MapTool : MonoBehaviour
     const string PATH_GROUND = "PoolingObjects/Game/Ground";
     const string PATH_BANANA = "PoolingObjects/Game/Banana";
     const string PATH_SHOOTER = "PoolingObjects/Game/Shooter/Shooter";
-
+    
     const string TYPE_BG = "BG";
     const string TYPE_GROUND = "Ground";
     const string TYPE_Monkey = "Monkey";
@@ -35,10 +39,19 @@ public class MapTool : MonoBehaviour
 
     private void Start()
     {
-        Load(1);
+        //Load(1);
+        //SetCamera();
     }
 
-    public void Load(int mapId)
+    public void Load(int mapId,Action<bool> result)
+    {
+        if (_isLoading) return;
+
+        StartCoroutine(LoadMap(mapId, result));
+    }
+
+
+    private void load(int mapId)
     {
         _mapID = mapId;
         _dicBrickModels.Clear();
@@ -65,13 +78,11 @@ public class MapTool : MonoBehaviour
         GameObject[] groundModels = Resources.LoadAll<GameObject>(PATH_GROUND);
         GameObject[] bananaModels = Resources.LoadAll<GameObject>(PATH_BANANA);
         
-
         for (int i = 0; i < groundModels.Length; ++i)
         {
             Ground ground = groundModels[i].GetComponent<Ground>();
             _dicGroundModels.Add(ground.GetID(), ground);
         }
-
 
         //  =====================================
         //                브릭  재질별로 모음
@@ -119,6 +130,9 @@ public class MapTool : MonoBehaviour
         string path = "Map/" + mapId;
         string data = Resources.Load<TextAsset>(path).text;
         Items items = JsonUtility.FromJson<Items>(data);
+
+        float screenLeft = 0.0f;
+        float screenRight = 0.0f;
 
         List<ModelHinge> hingeList = new List<ModelHinge>();
 
@@ -192,8 +206,7 @@ public class MapTool : MonoBehaviour
                         oj = Instantiate(_dicGroundModels[mGround.Type].gameObject, _groundGroup);
                         GB.ObjectPooling.I.Registration(_dicGroundModels[mGround.Type].gameObject.name, oj,true);
                     }
-
-                    
+                    oj.GetComponent<Ground>().Init();
                     oj.transform.SetParent(_groundGroup);
                     oj.transform.position = position;
                     oj.transform.rotation = rotation;
@@ -265,6 +278,9 @@ public class MapTool : MonoBehaviour
             }
         }
 
+
+
+
         for (int i = 0; i < hingeList.Count; ++i)
         {
             Debug.Log("HingeJointName : " + _gameObjectList[hingeList[i].ItemID].name);
@@ -276,27 +292,45 @@ public class MapTool : MonoBehaviour
             //joint.anchor = PaserVec3(hingeList[i].Anchor);
         }
 
-        //  =====================================
-        //              맵의 크기
-        //  =====================================
-        Vector2 min = new Vector2();
-        Vector2 max = new Vector2();
 
-        for (int i = 0; i < _gameObjectList.Count; ++i)
-        {
-            Vector2 pos = _gameObjectList[i].transform.position;
-
-            if (pos.x < min.x)  min.x = pos.x;
-            if (pos.x > max.x) max.x = pos.x;
-            if (pos.y < min.y)  min.y = pos.y;
-            if (pos.y > max.y) max.y = pos.y;
-        }
-
-        MapScale.x = Mathf.Abs(min.x) + Mathf.Abs(max.x);
-        MapScale.y = Mathf.Abs(min.y) + Mathf.Abs(max.y);
 
 
     }
+
+    private void SetCamera()
+    {
+        float screenLeft = 0.0f;
+        float screenRight = 0.0f;
+        for (int i = 0; i < _gameObjectList.Count; ++i)
+        {
+
+            Ground ground = _gameObjectList[i].GetComponent<Ground>();
+            if (ground != null)
+            {
+                ground.Init();
+
+
+                if (screenLeft > ground.LeftPoint.x)
+                    screenLeft = ground.LeftPoint.x;
+
+                if (screenRight < ground.RightPoint.x)
+                    screenRight = ground.RightPoint.x;
+            }
+        }
+
+
+        float left = Mathf.Abs(screenLeft);
+        float right = Mathf.Abs(screenRight);
+
+        float screenScale = left + right;
+        float gap = (right - left) * 0.5f;
+
+
+        Camera.main.orthographicSize = screenScale * 0.28f;
+        Camera.main.transform.position = new Vector3(gap, Camera.main.transform.position.y, -10.0f);
+
+    }
+
 
     private Vector3 PaserVec3(string data)
     {
@@ -356,7 +390,7 @@ public class MapTool : MonoBehaviour
             if (_tmpMapid > 550)
                 _tmpMapid = 550;
           
-            StartCoroutine(LoadMap(_tmpMapid));
+            StartCoroutine(LoadMap(_tmpMapid,(result)=> { }));
         }
 
 
@@ -368,7 +402,7 @@ public class MapTool : MonoBehaviour
                 _tmpMapid = 550;
                 
             
-            StartCoroutine(LoadMap(_tmpMapid));
+            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
         }
 
 
@@ -379,9 +413,8 @@ public class MapTool : MonoBehaviour
             _tmpMapid--;
             if (_tmpMapid < 1)
                 _tmpMapid = 1;
-                
             
-            StartCoroutine(LoadMap(_tmpMapid));
+            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
         }
 
 
@@ -393,22 +426,28 @@ public class MapTool : MonoBehaviour
                 _tmpMapid = 1;
                 
             
-            StartCoroutine(LoadMap(_tmpMapid));
+            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
+
         }
 
     }
 
+    #endif
+
     bool _isLoading = false;
-    IEnumerator LoadMap(int mapid)
+    IEnumerator LoadMap(int mapid,Action<bool> result)
     {
-        if (_isLoading) yield return null;
+
         _isLoading = true;
         Clear();
         yield return new WaitForSeconds(0.2f);
-        Load(mapid);
+        load(mapid);
         _isLoading = false;
+
+        yield return new WaitForSeconds(0.2f);
+        result?.Invoke(true);
     }
-#endif
+
 
 
 
