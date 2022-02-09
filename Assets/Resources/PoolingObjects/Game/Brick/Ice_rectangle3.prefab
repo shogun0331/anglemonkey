@@ -177,5 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shape: 2
   _texture: 0
+  _sprOrijin: {fileID: 21300000, guid: c21bdca41e019774fa942ae6f051f7fb, type: 3}
+  _sprBroken: {fileID: 0}
   _hp: 3
   _score: 0

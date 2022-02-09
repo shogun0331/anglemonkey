@@ -610,7 +610,7 @@ MonoBehaviour:
   _bullet: {fileID: 0}
   _shootParticle: {fileID: 0}
   _dottedGuide: {fileID: 5122609537741083469}
-  _shootPower: 10
+  _shootPower: 11.65
   TestOBJ: {fileID: 0}
 --- !u!1 &62463777149130526
 GameObject:

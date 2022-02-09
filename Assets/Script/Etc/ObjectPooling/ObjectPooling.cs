@@ -55,6 +55,7 @@ namespace GB
                 if (_pocket[key].Count > 0)
                 {
                     GameObject obj = _pocket[key].Pop();
+                    obj.transform.SetParent(null);
                     obj.SetActive(true);
                     return obj;
                 }

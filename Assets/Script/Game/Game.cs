@@ -33,6 +33,8 @@ public class Game : MonoBehaviour
 
     private List<int> _mapIDList = new List<int>();
 
+    public int GameScore = 0;
+    private int _subScore = 0;
 
     private void Awake()
     {
@@ -42,15 +44,28 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        GameScore = 0;
         Load(0);
     }
+
+    public void AddScore(int score)
+    {
+        GameScore += score;
+        _subScore -= score;
+    }
+
+    public bool CheckScore()
+    {
+        return GameScore == Mathf.Abs(_subScore);
+    }
+    
 
     public void Load(int randomSeed)
     {
         //Map Seed
         Random.InitState(randomSeed);
 
-        _mapIDList.Add(450);
+        _mapIDList.Add(56);
         _mapIDList.Add(Random.Range(100, 200));
         _mapIDList.Add(Random.Range(300, 500));
 
@@ -73,6 +88,11 @@ public class Game : MonoBehaviour
 
     }
 
+    public void TunStart()
+    {
+
+    }
+
     /// <summary>
     /// 턴 종료 - 장전 할 객체가 있는지 체크 
     /// </summary>
@@ -88,6 +108,8 @@ public class Game : MonoBehaviour
         switch (phase)
         {
             case TouchPhase.Began:
+                
+                _board.ReadyBrick();
                 _board.CheckShootReady(new Vector2(x, y));
                 break;
             case TouchPhase.Moved:

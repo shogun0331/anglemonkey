@@ -19,8 +19,10 @@ public class Shooter : MonoBehaviour
     float _maxBandLength = 2;
     Vector3 _dragPosition;
     [SerializeField]    GameObject _bullet;
+    public GameObject Bullet { get { return _bullet; } }
+    
 
-    [Header("Particle")]
+[Header("Particle")]
     [SerializeField] ParticleSystem _shootParticle = null;
 
     //[Header("GuideLine")]
@@ -42,71 +44,53 @@ public class Shooter : MonoBehaviour
 
     }
 
+
+
+
     [SerializeField] GameObject TestOBJ = null;
 
     private void drawGuideLine(Vector2 direction,float force)
     {
         //if (_bullet == null) return;
 
-        //µµÂø ³ôÀÌ * 2 
+        //G Grivity
+        //T Time;
+        //V Velocity
+        //S StartPosition
 
-        //float mass = 1.0f;
+        Vector2 S = _aimPoint.position;
+        Vector2 V = direction * force;
+        float dt = 0.07f;
+        float T = 0.0f;
 
-        //if (_bullet != null)
-        //    mass = _bullet.GetComponent<Rigidbody2D>().mass;
-
-        //force /= mass;
-        //Debug.Log(force);
-
-        //float dt = 0.02f;
-
-        //List <Vector2> list = new List<Vector2>();
-
-        //Vector2 tmp = direction * force;
-
-        //Vector2 p1 = (Vector2)_aimPoint.position;
-        //Vector2 p2 = p1 + tmp;
-        
-        //Vector3 p3 = p1 + tmp;
-        
-        
-
-        //if (TestOBJ == null)
-        //    TestOBJ = new GameObject("TestOBJ");
-
-        //TestOBJ.transform.position = new Vector2(p2.x  , p2.y  * 0.5f);
-
-        
-        ////TestOBJ.transform.position = p3;
-        //float time = 0.0f;
-        
-
-        //for (int i = 0; i < 100; ++i)
-        //{
-
+        float G =  Mathf.Abs( Physics2D.gravity.y);
+        List<Vector2> list = new List<Vector2>();
+        for (int i = 0; i < 10; ++i)
+        {
+            float x = S.x + V.x * T;
+            float y = S.y + V.y * T - 0.5f * G * T * T;
+            T += dt;
             
-        //    p1 = Vector2.MoveTowards(p1, p2, time);
-        //    //p2 = Vector2.MoveTowards(p2, p3, gravity * mass *  time * time);
+            Vector2 pos = new Vector2(x, y);
+            list.Add(pos);
+            
+        }
 
-        //    time += dt;
-        //    list.Add(p1);
-        //}
 
+
+        float dist = Vector2.Distance(list[0], list[1]);
         ////Draw
-        //if (!_dottedGuide.IsReady)
-        //    _dottedGuide.Ready(list, DottedGuide.Color.Blue);
-        //else
-        //    _dottedGuide.DrawAnimation(list, dt, 0.2f);
+        if (!_dottedGuide.IsReady)
+            _dottedGuide.Ready(list, DottedGuide.Color.Blue,true);
+        else
+            _dottedGuide.DrawAnimation(list, Time.deltaTime );
 
-
-        //_guideLine.SetPositions(list);
-        //_guideLine.UpdateOffset(dt);
 
     }
 
     private void clearGuideLine()
     {
-        //_dottedGuide.Clear();
+        _dottedGuide.Clear();
     }
 
     /// <summary>
@@ -225,6 +209,7 @@ public class Shooter : MonoBehaviour
                 _bullet.transform.localScale = new Vector3(1.0f, -1.0f, 1.0f);
             else
                 _bullet.transform.localScale = Vector3.one;
+            
         }
 
         //=====================================================================
@@ -296,7 +281,7 @@ public class Shooter : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Z))
         {
-            Debug.Log("Test Z");
+            
             isTest = true;
             if (_bullet == null)
             {

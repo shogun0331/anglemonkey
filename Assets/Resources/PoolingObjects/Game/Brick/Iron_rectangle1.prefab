@@ -95,6 +95,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shape: 0
   _texture: 1
+  _sprOrijin: {fileID: 21300000, guid: 1ce2e0a395760ad4a81aa987fb54b4bd, type: 3}
+  _sprBroken: {fileID: 0}
   _hp: Infinity
   _score: 0
 --- !u!1 &7495181530669563390

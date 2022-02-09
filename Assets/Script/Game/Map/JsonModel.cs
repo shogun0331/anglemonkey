@@ -6,7 +6,7 @@ public class ModelBrick
     public int Type;
     public string Tag;
     public float Hp;
-    public float Score;
+    public int Score;
 
     public float Mass;
     public float AngularDrag;

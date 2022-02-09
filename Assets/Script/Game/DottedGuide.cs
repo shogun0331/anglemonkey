@@ -37,11 +37,11 @@ public class DottedGuide : MonoBehaviour
         _isInit = true;
     }
 
-    public void Ready(List<Vector2> points, DottedGuide.Color color)
+    public void Ready(List<Vector2> points, DottedGuide.Color color,bool scaleAction = false)
     {
         if (!_isInit) Init();
         if (points.Count < 3) return;
-
+        
         Clear();
 
         _dots = new GameObject[points.Count - 1];
@@ -57,7 +57,7 @@ public class DottedGuide : MonoBehaviour
 
         for (int i = 0; i < _dots.Length; ++i)
         {
-
+   
             GameObject oj = null;
 
             if (GB.ObjectPooling.I.GetRemainingUses("Dotted") > 0)
@@ -73,12 +73,52 @@ public class DottedGuide : MonoBehaviour
 
             if (oj == null) return;
 
+            
             oj.transform.SetParent(transform);
             _dots[i] = oj;
+
+
+
+            _dots[i].transform.localScale = Vector3.one;
+
+            if (scaleAction)
+            {
+                float sz = i * 0.08f;
+                _dots[i].transform.localScale = Vector3.one;
+                Vector3 scale = _dots[i].transform.localScale;
+
+                if (sz > 1.0f)
+                {
+                    scale = Vector3.zero;
+                }
+                else
+                {
+                    scale.x -= sz;
+                    scale.y -= sz;
+                }
+                _dots[i].transform.localScale = scale;
+            }
 
             _dots[i].transform.position = _listPoints[i];
             _dots[i].GetComponent<SpriteRenderer>().sprite = sprColor;
         }
+
+        _isReady = true;
+
+    }
+
+    public void Draw(List<Vector2> points, DottedGuide.Color color, bool scaleAction = false, bool isAnimation = false)
+    {
+        if (!_isInit) Init();
+        Clear();
+        Sprite sprColor = _sprBlue;
+        switch (color)
+        {
+            case Color.Blue: sprColor = _sprBlue; break;
+            case Color.Purple: sprColor = _sprPurple; break;
+            case Color.Yellow: sprColor = _sprYellow; break;
+        }
+
 
     }
 
@@ -96,28 +136,23 @@ public class DottedGuide : MonoBehaviour
 
     float _time;
 
-    public void DrawAnimation(List<Vector2> points, float dt ,float dist)
+    public void DrawAnimation(List<Vector2> points, float dt)
     {
         if (!_isReady) return;
 
-        _time += dt;
+        _time +=dt ;
         _listPoints = points;
 
-        if (_time < dist)
+        for (int i = 0; i < _dots.Length; ++i)
         {
-            for (int i = 0; i < _dots.Length; ++i)
-            {
-                Vector2 dir = (_listPoints[i + 1] - (Vector2)_dots[i].transform.position).normalized;
-                _dots[i].transform.position =  dir * dt;
-            }
+            _dots[i].SetActive(true);
+            _dots[i].transform.position = _listPoints[i];
+            _dots[i].transform.position = Vector2.MoveTowards(_listPoints[i], _listPoints[i + 1], _time);
         }
-        else
-        {
-            for (int i = 0; i < _dots.Length; ++i)
-                _dots[i].transform.position = _listPoints[i];
 
-            _time = 0.0f;
-        }
+        if (_time > 1.0f)
+            _time -= 1.0f;
+       
 
     }
 

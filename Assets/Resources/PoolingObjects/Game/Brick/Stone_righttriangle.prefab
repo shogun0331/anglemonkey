@@ -151,5 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shape: 5
   _texture: 2
+  _sprOrijin: {fileID: 21300000, guid: 0bb14dd14fafa774db0b6f6c7ac511ec, type: 3}
+  _sprBroken: {fileID: 21300000, guid: 8d4ea94cc7474d34698f5d7dc67fabb1, type: 3}
   _hp: 16.5
   _score: 0

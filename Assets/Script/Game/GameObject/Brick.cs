@@ -12,6 +12,9 @@ public class Brick : MonoBehaviour
     [SerializeField] OutsideTexture _texture;
     public OutsideTexture MyTexture{get{ return _texture;}}
 
+    [SerializeField] Sprite _sprOrijin = null;
+    [SerializeField] Sprite _sprBroken = null;
+
     [SerializeField] float _hp;
     [SerializeField] int _score;
 
@@ -24,27 +27,6 @@ public class Brick : MonoBehaviour
 
     
 
-    private void Start()
-    {
-        _orijinScale = transform.localScale;
-
-        if (GetComponent<SpriteRenderer>() == null)
-        {
-
-            Transform child = transform.GetChild(0);
-            if (child != null)
-                _sprRenderModel = child.GetComponent<SpriteRenderer>();
-        }
-        else
-        {
-            _sprRenderModel = GetComponent<SpriteRenderer>();
-        }
-
-
-        if(_sprRenderModel != null)
-        _sprRenderModel.sortingOrder = 0;
-
-    }
 
 
     private void playDestroy(float force)
@@ -97,15 +79,34 @@ public class Brick : MonoBehaviour
 
     public void SetModel(ModelBrick brick)
     {
+
         _model = brick;
+        _hp = _model.Hp;
+        _score = _model.Score;
         _isDestroy = false;
 
-        Transform child = transform.GetChild(0);
-        if (child != null)
-            _sprRenderModel = child.GetComponent<SpriteRenderer>();
+
+        _orijinScale = transform.localScale;
+
+        if (GetComponent<SpriteRenderer>() == null)
+        {
+            Transform child = transform.GetChild(0);
+            if (child != null)
+                _sprRenderModel = child.GetComponent<SpriteRenderer>();
+        }
+        else
+        {
+            _sprRenderModel = GetComponent<SpriteRenderer>();
+        }
+
 
         if (_sprRenderModel != null)
+        {
+            _sprRenderModel.sprite = _sprOrijin;
             _sprRenderModel.sortingOrder = 0;
+        }
+
+
 
     }
 
@@ -122,31 +123,87 @@ public class Brick : MonoBehaviour
         if (_model.AngularDrag != GetComponent<Rigidbody2D>().angularDrag) return true;
 
         return  false;
+    }
 
+    private void DestroyBrick()
+    {
+
+        _isDestroy = true;
+        //GameObject oj = null;
+        switch (MyTexture)
+        {
+            case OutsideTexture.Ice:
+                loadPoolingObject(Def.PATH_EFFECT_ICE, Def.EFFECT_ICE).transform.position = transform.position;
+                break;
+            case OutsideTexture.Stone:
+                loadPoolingObject(Def.PATH_EFFECT_ROCK, Def.EFFECT_ROCK).transform.position = transform.position;
+                break;
+            case OutsideTexture.Wood:
+                loadPoolingObject(Def.PATH_EFFECT_WOOD, Def.EFFECT_WOOD).transform.position = transform.position;
+                break;
+        }
+
+        gameObject.SetActive(false);
+
+        //애니메이션 할지 결정
+        if (Random.value > 0.8f)
+        {
+            //gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            //playDestroy(magnitude);
+        }
+        else
+        {
+
+        }
+
+    }
+
+    private GameObject loadPoolingObject(string path, string key)
+    {
+        GameObject oj = null;
+        if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
+        {
+            oj = GB.ObjectPooling.I.Import(key);
+        }
+        else
+        {
+            GameObject resources = Resources.Load<GameObject>(path);
+            oj = Instantiate(resources);
+            GB.ObjectPooling.I.Registration(key, oj, true);
+        }
+
+        return oj;
     }
 
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-
         float magnitude = coll.relativeVelocity.sqrMagnitude;
-        float damage = magnitude * 0.1f;
+
+        Rigidbody2D rg = GetComponent<Rigidbody2D>();
+        if (rg == null) return;
+        if (coll.rigidbody == null ) return;
+       
+        float damage = 0.0f;
+
+        //대상의 충돌 속도와 본인의 충돌 속도 중 더 크기가 큰쪽으로 변수를 할당한다.
+        damage = Mathf.Max(coll.relativeVelocity.magnitude * coll.rigidbody.mass, rg.velocity.magnitude * rg.mass);
+
+
         float hp = _hp - damage;
 
+        if (_model != null)
+        {
+            if (hp < _model.Hp * 0.5f)
+            {
+                if (_sprRenderModel != null && _sprBroken != null)
+                    _sprRenderModel.sprite = _sprBroken;
+            }
+        }
 
         if (hp < 0.0f)
         {
-            //애니메이션 할지 결정
-            //if (Random.value > 0.8f)
-            //{
-            //    playDestroy(magnitude);
-            //}
-            //else
-            {
-                gameObject.SetActive(false);
-            }
-            
-            _isDestroy = true;
+            DestroyBrick();
         }
         else
             _hp -= damage;

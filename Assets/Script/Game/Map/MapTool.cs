@@ -23,7 +23,9 @@ public class MapTool : MonoBehaviour
     const string PATH_GROUND = "PoolingObjects/Game/Ground";
     const string PATH_BANANA = "PoolingObjects/Game/Banana";
     const string PATH_SHOOTER = "PoolingObjects/Game/Shooter/Shooter";
-    
+    const string PATH_SPRING = "PoolingObjects/Game/Spring/Spring";
+
+
     const string TYPE_BG = "BG";
     const string TYPE_GROUND = "Ground";
     const string TYPE_Monkey = "Monkey";
@@ -36,6 +38,8 @@ public class MapTool : MonoBehaviour
     public Vector2 MapScale;
 
     private int _mapID = 0;
+
+    public List<Item> _itemList = new List<Item>();
 
     private void Start()
     {
@@ -56,8 +60,9 @@ public class MapTool : MonoBehaviour
         _mapID = mapId;
         _dicBrickModels.Clear();
         _dicGroundModels.Clear();
+        _itemList.Clear();
 
-        if(_brickGroup == null)
+        if (_brickGroup == null)
         _brickGroup = new GameObject("Bricks").transform;
         if (_groundGroup == null)
             _groundGroup = new GameObject("Grounds").transform;
@@ -131,8 +136,6 @@ public class MapTool : MonoBehaviour
         string data = Resources.Load<TextAsset>(path).text;
         Items items = JsonUtility.FromJson<Items>(data);
 
-        float screenLeft = 0.0f;
-        float screenRight = 0.0f;
 
         List<ModelHinge> hingeList = new List<ModelHinge>();
 
@@ -140,12 +143,13 @@ public class MapTool : MonoBehaviour
         {
             Item item = items.items[i];
 
+            _itemList.Add(item);
             Vector3 position;
 
             Vector3 scale;
 
             Quaternion rotation;
-            GameObject oj;
+            GameObject oj = null;
 
             switch (item.Type)
             {
@@ -169,7 +173,6 @@ public class MapTool : MonoBehaviour
 
                     if (GB.ObjectPooling.I.GetRemainingUses(_dicBrickModels[texture][mBrick.Type].name) > 0)
                     {
-
                         oj = GB.ObjectPooling.I.Import(_dicBrickModels[texture][mBrick.Type].name);
                     }
                     else
@@ -184,6 +187,8 @@ public class MapTool : MonoBehaviour
                     oj.transform.localScale = scale;
                     if (oj.GetComponent<Rigidbody2D>() != null)
                         oj.GetComponent<Rigidbody2D>().isKinematic = true;
+
+                    oj.GetComponent<Brick>().SetModel(mBrick);
 
                     _gameObjectList.Add(oj);
                     break;
@@ -216,6 +221,24 @@ public class MapTool : MonoBehaviour
                 case TYPE_Monkey:
                     break;
                 case TYPE_SPRING:
+                    
+                    position = PaserVec3(item.Position);
+                    rotation = Quaternion.Euler(PaserVec3(item.Rotation));
+
+                    if (GB.ObjectPooling.I.GetRemainingUses(TYPE_SPRING) > 0)
+                    {
+                        oj = GB.ObjectPooling.I.Import(TYPE_SPRING);
+                    }
+                    else
+                    {
+                        GameObject resources = Resources.Load(PATH_SPRING) as GameObject;
+                        oj = Instantiate(resources, _groundGroup);
+                        GB.ObjectPooling.I.Registration(TYPE_SPRING, oj, true);
+                    }
+
+                    oj.transform.position = position;
+                    oj.transform.rotation = rotation;
+                    _gameObjectList.Add(oj);
                     break;
                 case TYPE_BANANA:
                     position = PaserVec3(item.Position);
@@ -276,20 +299,39 @@ public class MapTool : MonoBehaviour
                     hingeList.Add(hinge);
                     break;
             }
+
+            if (oj != null)
+            {
+                if (oj.GetComponent<HingeJoint2D>() != null)
+                    Destroy(oj.GetComponent<HingeJoint2D>());
+
+                if (oj.GetComponent<ObjectTag>() != null)
+                    oj.GetComponent<ObjectTag>().Index = item.ID;
+                else
+                    oj.AddComponent<ObjectTag>().Index = item.ID;
+
+
+            }
+            
+            
+
         }
 
 
-
+        
 
         for (int i = 0; i < hingeList.Count; ++i)
         {
-            Debug.Log("HingeJointName : " + _gameObjectList[hingeList[i].ItemID].name);
-            Debug.Log("JointName : " + _gameObjectList[hingeList[i].JointID].name);
+            GameObject g1 = _gameObjectList.Find(x => x.GetComponent<ObjectTag>().Index == hingeList[i].ItemID);
+            HingeJoint2D joint = g1.AddComponent<HingeJoint2D>();
+            GameObject g2 = _gameObjectList.Find(x => x.GetComponent<ObjectTag>().Index == hingeList[i].JointID);
 
-            //HingeJoint2D joint = _gameObjectList[hingeList[i].ItemID - 1].AddComponent<HingeJoint2D>();
-            //joint.connectedBody = _gameObjectList[hingeList[i].JointID - 1].GetComponent<Rigidbody2D>();
-            //joint.connectedAnchor = PaserVec3(hingeList[i].ConnectedAnchor);
-            //joint.anchor = PaserVec3(hingeList[i].Anchor);
+            joint.connectedBody = g2.GetComponent<Rigidbody2D>();
+            joint.connectedAnchor = PaserVec3(hingeList[i].ConnectedAnchor);
+            joint.anchor = PaserVec3(hingeList[i].Anchor);
+
+            g1.transform.SetParent(null);
+            g2.transform.SetParent(null);
         }
 
 
@@ -297,7 +339,7 @@ public class MapTool : MonoBehaviour
 
     }
 
-    private void SetCamera()
+    public void SetCamera()
     {
         float screenLeft = 0.0f;
         float screenRight = 0.0f;

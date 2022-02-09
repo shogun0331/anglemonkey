@@ -39,9 +39,10 @@ public class Baby : Monkey
 
     }
 
-    public override void UpdateRotation()
+    public override void UpdateShoot()
     {
-        base.UpdateRotation();
+        
+        base.UpdateShoot();
     }
 
     public override void Comback()
