@@ -41,6 +41,9 @@ public class MapTool : MonoBehaviour
 
     public List<Item> _itemList = new List<Item>();
 
+    private List<int> _mokeyList = new List<int>();
+    public List<int> MonkeyList { get { return _mokeyList; } }
+    
     private void Start()
     {
         //Load(1);
@@ -61,6 +64,7 @@ public class MapTool : MonoBehaviour
         _dicBrickModels.Clear();
         _dicGroundModels.Clear();
         _itemList.Clear();
+        _mokeyList.Clear();
 
         if (_brickGroup == null)
         _brickGroup = new GameObject("Bricks").transform;
@@ -219,6 +223,10 @@ public class MapTool : MonoBehaviour
                     _gameObjectList.Add(oj);
                     break;
                 case TYPE_Monkey:
+                    ModelMonkey  monkey = JsonUtility.FromJson<ModelMonkey>(item.Json);
+                    _mokeyList.Add(monkey.Type);
+
+
                     break;
                 case TYPE_SPRING:
                     
@@ -261,7 +269,9 @@ public class MapTool : MonoBehaviour
                                 oj = Instantiate(bananaModels[j].gameObject);
                                 GB.ObjectPooling.I.Registration(bananaModels[j].gameObject.name, oj,true);
                             }
-                            
+                            Banana banana = oj.GetComponent<Banana>();
+                            banana.SetModel(mBanana);
+
                             oj.transform.SetParent(_bananaGroup);
                             oj.transform.position = position;
                             oj.transform.rotation = rotation;
@@ -309,13 +319,10 @@ public class MapTool : MonoBehaviour
                     oj.GetComponent<ObjectTag>().Index = item.ID;
                 else
                     oj.AddComponent<ObjectTag>().Index = item.ID;
-
-
             }
-            
-            
-
         }
+
+
 
 
         

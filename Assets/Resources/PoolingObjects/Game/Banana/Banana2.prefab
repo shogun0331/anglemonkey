@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
+  _hp: 0
+  _score: 0
 --- !u!1 &2078912968436465308
 GameObject:
   m_ObjectHideFlags: 0
@@ -28441,6 +28443,7 @@ GameObject:
   - component: {fileID: 2124379616594244995}
   - component: {fileID: 6315448469682110963}
   - component: {fileID: 8039883833599841763}
+  - component: {fileID: 5428491687825473322}
   m_Layer: 0
   m_Name: Effect
   m_TagString: Untagged
@@ -28543,6 +28546,20 @@ MonoBehaviour:
   loop: 0
   timeScale: 0.7
   useUnityTimeScale: 1
+--- !u!114 &5428491687825473322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7709083110205075836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84b263d0ff7e17f46bfe00fac5544ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoop: 1
+  _loopDelay: 3
 --- !u!1 &8237091217782583486
 GameObject:
   m_ObjectHideFlags: 0

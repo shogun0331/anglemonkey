@@ -259,25 +259,23 @@ public class InputManager : MonoBehaviour
         // get key input
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Baby);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            
-            
+            Game.I.Reload((int)Def.Monkey.Gold);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            
-            
+            Game.I.Reload((int)Def.Monkey.Papio);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Macaca);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Lemur);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha6))
         {

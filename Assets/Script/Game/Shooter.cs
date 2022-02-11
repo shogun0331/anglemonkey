@@ -16,17 +16,12 @@ public class Shooter : MonoBehaviour
     [SerializeField] GameObject _imgAimBand = null;
     [SerializeField] Transform _aimPoint = null;
 
-    float _maxBandLength = 2;
+    float _maxBandLength = 1f;
+
     Vector3 _dragPosition;
     [SerializeField]    GameObject _bullet;
     public GameObject Bullet { get { return _bullet; } }
-    
 
-[Header("Particle")]
-    [SerializeField] ParticleSystem _shootParticle = null;
-
-    //[Header("GuideLine")]
-    //[SerializeField]  GuideLine _guideLine = null;
     [Header("Dotted GuideLine")]
     [SerializeField] DottedGuide _dottedGuide = null;
 
@@ -35,23 +30,15 @@ public class Shooter : MonoBehaviour
     [Range(1.0f,20.0f)]
     [SerializeField] float _shootPower = 20.0f;
     
-  
-
     private void Awake()
     {
-
         Init();
-
     }
 
 
-
-
-    [SerializeField] GameObject TestOBJ = null;
-
     private void drawGuideLine(Vector2 direction,float force)
     {
-        //if (_bullet == null) return;
+        if (_bullet == null) return;
 
         //G Grivity
         //T Time;
@@ -60,25 +47,20 @@ public class Shooter : MonoBehaviour
 
         Vector2 S = _aimPoint.position;
         Vector2 V = direction * force;
-        float dt = 0.07f;
         float T = 0.0f;
+        float dt = 0.07f;
 
         float G =  Mathf.Abs( Physics2D.gravity.y);
         List<Vector2> list = new List<Vector2>();
+
         for (int i = 0; i < 10; ++i)
         {
             float x = S.x + V.x * T;
             float y = S.y + V.y * T - 0.5f * G * T * T;
             T += dt;
-            
-            Vector2 pos = new Vector2(x, y);
-            list.Add(pos);
-            
+            list.Add(new Vector2(x, y));
         }
 
-
-
-        float dist = Vector2.Distance(list[0], list[1]);
         ////Draw
         if (!_dottedGuide.IsReady)
             _dottedGuide.Ready(list, DottedGuide.Color.Blue,true);
@@ -122,16 +104,24 @@ public class Shooter : MonoBehaviour
     /// <param name="bullet">총알 장전</param>
     public void SetReady(GameObject bullet)
     {
+        if (_bullet != null && state == State.Ready)
+            GB.ObjectPooling.I.Destroy(_bullet);
+      
         _bullet = bullet;
         _bullet.transform.SetParent(null);
         _bullet.transform.position = Vector3.zero;
         _bullet.transform.localScale = Vector3.one;
         _bullet.transform.rotation = Quaternion.identity;
-
+        _bullet.GetComponent<Rigidbody2D>().isKinematic = true;
         _bullet.transform.SetParent(_aimPoint);
         _bullet.transform.localPosition = Vector3.zero;
-        _bullet.transform.localPosition = new Vector2(0.2f, -0.08f);
+        _bullet.transform.localPosition = new Vector2(0.0f, -0.08f);
         _bullet.SetActive(true);
+
+
+        GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST1, Def.EFFECT_DUST1);
+        oj.transform.position = _aimPoint.position;
+        oj.transform.SetParent(null);
 
         state = State.Ready;
     }
@@ -162,42 +152,33 @@ public class Shooter : MonoBehaviour
 
         _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, _maxBandLength);
 
-        //Shooter 바디에 가까워질수록 각도는 줄어듬
-        //float checkAngleX =   7.5f;
-        
-        //if (_dragPosition.y < _aimPoint.position.y
-        //    && _dragPosition.x < _aimPoint.position.x + checkAngleX
-        //    && _dragPosition.x > _aimPoint.position.x - checkAngleX)
-        //{
-        
-        //    float minLength = 0.43f;
+        //원숭이가 새총몸통에  가까워지면
+        if (_dragPosition.y < _aimPoint.position.y)
+        {
 
-            
+            //새총 바닥 
+            Vector2 bottom = _aimPoint.position;
+            bottom.y -= (0.471f + 0.8f);
 
-        //    //0~1
-        //    float distPer = Mathf.Abs(_dragPosition.x) / checkAngleX;
+            float distX =  Mathf.Abs(_dragPosition.x - _aimPoint.position.x);
+            if (distX < 0.5f)
+            {
+                float distY = Mathf.Abs(_dragPosition.y - _aimPoint.position.y);
+                float per = 1.0f - (distX / 0.5f);
+                //높이
+                float ty = bottom.y + (distY * per);
 
-        //    float length = minLength * distPer;
+                if (_dragPosition.y < ty)
+                    _dragPosition.y = ty;
+            }
+        }
 
-            
-        //    Debug.Log(distPer);
-
-        //    //float minX = 0.2f;
-        //    //if (length < minX) length = minLength;
-
-        //    _dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, length);
-        //}
- 
-
-        //_dragPosition = point;
-        //_dragPosition = _aimPoint.position + Vector3.ClampMagnitude(point - _aimPoint.position, _maxBandLength);
-        
         //연출
         //=====================================================================
 
 
         //밴드 끝 부분 에임 포인트 회전
-        Vector2 dir = (_aimPoint.position - point);
+        Vector2 dir = (_aimPoint.position - _dragPosition);
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         Quaternion axis = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -231,12 +212,10 @@ public class Shooter : MonoBehaviour
     {
         if (state != State.Aim) return;
 
-        if (_shootParticle != null)
-        {
-            _shootParticle.transform.position = _aimPoint.position;
-            _shootParticle.Play();
-        }
 
+        GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2);
+        oj.transform.position = _aimPoint.position;
+     
         if (_bullet != null)
         {
             _bullet.transform.position = _aimPoint.transform.position;
@@ -267,76 +246,24 @@ public class Shooter : MonoBehaviour
         float percent = dist / _maxBandLength;
 
         return percent ;
+
     }
 
-  
-
-
-
-    /// <summary>
-    /// 테스트
-    /// </summary>
-    private void Update()
+    private GameObject loadPoolingObject(string path, string key)
     {
-
-        if (Input.GetKeyUp(KeyCode.Z))
+        GameObject oj = null;
+        if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
         {
-            
-            isTest = true;
-            if (_bullet == null)
-            {
-
-                if (GB.ObjectPooling.I.GetRemainingUses("BABY") > 0)
-                {
-                    GameObject baby = GB.ObjectPooling.I.Import("BABY");
-                    SetReady(baby);
-
-                }
-                else
-                {
-                    GameObject baby = Resources.Load<GameObject>(Def.PATH_MONKEY_BABY);
-                    GameObject oj = Instantiate(baby);
-                    SetReady(oj);
-                    GB.ObjectPooling.I.Registration("BABY", oj, true);
-                }
-            }
-
+            oj = GB.ObjectPooling.I.Import(key);
+        }
+        else
+        {
+            GameObject resources = Resources.Load<GameObject>(path);
+            oj = Instantiate(resources);
+            GB.ObjectPooling.I.Registration(key, oj, true);
         }
 
-
-        if (Input.GetMouseButton(0))
-        {
-            Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = 10;
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-            if (state == State.Ready)
-            {
-                float dist = Vector2.Distance(mousePosition, transform.position);
-                if (dist > 0.8f) return;
-                else state = State.Aim;
-            }
-            
-            SetAming(mousePosition);
-
-
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-
-            if (isTest)
-            {
-                //GB.ObjectPooling.I.Destroy(_bullet);
-            }
-
-            Shoot();
-        }
-
-        
-
-
+        return oj;
     }
-
 
 }

@@ -29,19 +29,12 @@ public class Baby : Monkey
     public override void Shoot(float power, Vector2 direction)
     {
         if (_rg == null) return;
-        
         base.Shoot(power,direction);
-
-    }
-
-    public void UpdateComback(float dt)
-    {
 
     }
 
     public override void UpdateShoot()
     {
-        
         base.UpdateShoot();
     }
 

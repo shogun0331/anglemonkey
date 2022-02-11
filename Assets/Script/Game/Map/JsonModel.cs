@@ -32,6 +32,9 @@ public class ModelHinge
 public class ModelMonkey
 {
     public int Type;
+    public float Mass;
+    public float AngularDrag;
+    public float GravityScale;
 }
 
 [Serializable]

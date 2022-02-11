@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9093856288883316266}
   - component: {fileID: 5724503033748935072}
   - component: {fileID: 5905451504270432731}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Baby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   _spine: {fileID: 9093856290377312416}
+  isLeft: 0
 --- !u!50 &5724503033748935072
 Rigidbody2D:
   serializedVersion: 4
@@ -98,7 +99,7 @@ GameObject:
   - component: {fileID: 9093856290377312447}
   - component: {fileID: 9093856290377312444}
   - component: {fileID: 9093856290377312416}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,3 +213,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84b263d0ff7e17f46bfe00fac5544ed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isLoop: 0
+  _loopDelay: 0

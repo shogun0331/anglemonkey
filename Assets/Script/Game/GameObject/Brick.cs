@@ -25,67 +25,21 @@ public class Brick : MonoBehaviour
 
     Vector2 _orijinScale;
 
-    
 
+    private CircleCollider2D _cCollider = null;
+    private PolygonCollider2D _pCollider = null;
+    private BoxCollider2D _bCollider = null;
 
-
-    private void playDestroy(float force)
-    {
-        StartCoroutine(playDestroyAction(force));
-    }
-
-
-    IEnumerator playDestroyAction(float force)
-    {
-
-        const int ACTION_MOVE_CENTER = 0;
-        const int ACTION_MOVE_DOWN = 1;
-
-
-        float dt = 0.02f;
-
-        if (_sprRenderModel != null)
-            _sprRenderModel.sortingOrder = 1;
-
-        Vector2 center = Camera.main.transform.position;
-        Vector2 targetScale = _orijinScale * 3f;
-        
-        float time = 0.0f;
-
-        int action = ACTION_MOVE_CENTER;
-
-        float speed = force * 0.01f;
-
-
-        while (true)
-        {
-            yield return new WaitForSeconds(dt);
-
-
-
-            time += dt + (speed * dt);
-
-            if (time > 0.8f)
-            {
-            }
-
-            if (time > 1.0f)
-            {
-
-                yield break;
-            }
-        }
-    }
 
     public void SetModel(ModelBrick brick)
     {
-
+        
         _model = brick;
         _hp = _model.Hp;
         _score = _model.Score;
         _isDestroy = false;
 
-
+        setTriger(false);
         _orijinScale = transform.localScale;
 
         if (GetComponent<SpriteRenderer>() == null)
@@ -106,8 +60,21 @@ public class Brick : MonoBehaviour
             _sprRenderModel.sortingOrder = 0;
         }
 
+        StopAllCoroutines();
 
+    }
 
+    private void setTriger(bool isActive)
+    {
+
+        _cCollider = GetComponent<CircleCollider2D>();
+        if (_cCollider != null) _cCollider.isTrigger = isActive;
+
+        _bCollider = GetComponent<BoxCollider2D>();
+        if (_bCollider != null) _bCollider.isTrigger = isActive;
+
+        _pCollider = GetComponent<PolygonCollider2D>();
+        if (_pCollider != null) _pCollider.isTrigger = isActive;
     }
 
     /// <summary>
@@ -125,11 +92,13 @@ public class Brick : MonoBehaviour
         return  false;
     }
 
-    private void DestroyBrick()
+    private void DestroyBrick(float damage)
     {
 
         _isDestroy = true;
-        //GameObject oj = null;
+
+        Game.I.AddScore(_model.Score);
+        
         switch (MyTexture)
         {
             case OutsideTexture.Ice:
@@ -143,20 +112,67 @@ public class Brick : MonoBehaviour
                 break;
         }
 
-        gameObject.SetActive(false);
-
+        
         //애니메이션 할지 결정
-        if (Random.value > 0.8f)
+        if (damage > 10.0f &&  Random.value > 0.8f)
         {
-            //gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
-            //playDestroy(magnitude);
+            setTriger(true);
+            StartCoroutine(playDestroyAction(damage));
         }
         else
         {
+            gameObject.SetActive(false);
+        }
+
+    }
+
+    IEnumerator playDestroyAction(float damage)
+    {
+        float time = 0.0f;
+
+        Vector2 orijin = transform.localScale;
+
+        float x = Random.Range(-500.0f, 500.0f);
+        float y = Random.Range(1000.0f, 2000.0f);
+
+        GetComponent<Rigidbody2D>().angularVelocity = Random.value > 0.5 ? damage * 20.0f : -damage * 20.0f;
+        GetComponent<Rigidbody2D>().AddForce(new Vector2(x, y));
+        GetComponent<Rigidbody2D>().gravityScale = 5;
+
+
+
+        if (_sprRenderModel != null)
+            _sprRenderModel.sortingOrder = 1000;
+     
+        while (true)
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+            time += Time.deltaTime;
+
+            Vector2 scale = transform.localScale;
+            scale.x += Time.deltaTime * 3;
+            scale.y += Time.deltaTime * 3;
+            transform.localScale = scale;
+
+            if (time > 3.0f)
+            {
+                if (_sprRenderModel != null)
+                    _sprRenderModel.sortingOrder = 0;
+                transform.localScale = orijin;
+                transform.rotation = Quaternion.identity;
+                GetComponent<Rigidbody2D>().angularVelocity = 0.0f;
+                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                GetComponent<Rigidbody2D>().gravityScale = _model.GravityScale;
+                setTriger(false);
+                gameObject.SetActive(false);
+                yield break;
+            }
+
 
         }
 
     }
+
 
     private GameObject loadPoolingObject(string path, string key)
     {
@@ -176,21 +192,11 @@ public class Brick : MonoBehaviour
     }
 
 
-    void OnCollisionEnter2D(Collision2D coll)
+
+    public void SetDamage(float damage)
     {
-        float magnitude = coll.relativeVelocity.sqrMagnitude;
-
-        Rigidbody2D rg = GetComponent<Rigidbody2D>();
-        if (rg == null) return;
-        if (coll.rigidbody == null ) return;
-       
-        float damage = 0.0f;
-
-        //대상의 충돌 속도와 본인의 충돌 속도 중 더 크기가 큰쪽으로 변수를 할당한다.
-        damage = Mathf.Max(coll.relativeVelocity.magnitude * coll.rigidbody.mass, rg.velocity.magnitude * rg.mass);
-
-
         float hp = _hp - damage;
+      
 
         if (_model != null)
         {
@@ -202,11 +208,31 @@ public class Brick : MonoBehaviour
         }
 
         if (hp < 0.0f)
-        {
-            DestroyBrick();
-        }
+            DestroyBrick(damage);
         else
             _hp -= damage;
+
+
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (!Game.I.GetReady()) return;
+        if (_isDestroy) return;
+
+        float magnitude = coll.relativeVelocity.sqrMagnitude;
+
+        Rigidbody2D rg = GetComponent<Rigidbody2D>();
+        if (rg == null) return;
+        if (coll.rigidbody == null ) return;
+       
+        float damage = 0.0f;
+
+        //대상의 충돌 속도와 본인의 충돌 속도 중 더 크기가 큰쪽으로 변수를 할당한다.
+        damage = Mathf.Max(coll.relativeVelocity.magnitude * coll.rigidbody.mass, rg.velocity.magnitude * rg.mass);
+        SetDamage(damage);
+
+
     }
 
 

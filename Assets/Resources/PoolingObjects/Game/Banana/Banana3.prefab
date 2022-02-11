@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 1082659240737629331}
   - component: {fileID: 1082659240737629335}
   - component: {fileID: 1037239136483976735}
+  - component: {fileID: 5937300964570604181}
   m_Layer: 0
   m_Name: Banana3
   m_TagString: TargetObject
@@ -130,6 +131,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 2
+  _hp: 0
+  _score: 0
+--- !u!114 &5937300964570604181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082659240737629324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84b263d0ff7e17f46bfe00fac5544ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoop: 1
+  _loopDelay: 3
 --- !u!1 &3493460628793851102
 GameObject:
   m_ObjectHideFlags: 0
@@ -14285,6 +14302,7 @@ GameObject:
   - component: {fileID: 9060265226247156953}
   - component: {fileID: 2436705255617332592}
   - component: {fileID: 1619825696712017673}
+  - component: {fileID: 2708305747937353486}
   m_Layer: 0
   m_Name: Effect
   m_TagString: Untagged
@@ -14387,6 +14405,20 @@ MonoBehaviour:
   loop: 0
   timeScale: 0.7
   useUnityTimeScale: 1
+--- !u!114 &2708305747937353486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5004416343270490415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84b263d0ff7e17f46bfe00fac5544ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLoop: 1
+  _loopDelay: 3
 --- !u!1 &7196715032217696610
 GameObject:
   m_ObjectHideFlags: 0
