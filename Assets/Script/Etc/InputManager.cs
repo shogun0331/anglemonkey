@@ -279,15 +279,15 @@ public class InputManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Nasalis);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Hylobatidae);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha8))
         {
-            
+            Game.I.Reload((int)Def.Monkey.Gorilla);
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {

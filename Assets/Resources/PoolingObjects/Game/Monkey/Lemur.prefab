@@ -197,7 +197,7 @@ MonoBehaviour:
   calculateTangents: 0
   logErrors: 0
   disableRenderingOnOverride: 1
-  _animationName: skill
+  _animationName: idle_01
   loop: 1
   timeScale: 1
   useUnityTimeScale: 1

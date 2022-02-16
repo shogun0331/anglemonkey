@@ -174,8 +174,20 @@ public class Papio : Monkey
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 

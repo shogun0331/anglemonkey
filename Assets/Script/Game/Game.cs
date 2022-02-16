@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class Game : MonoBehaviour
 {
 
@@ -27,21 +25,28 @@ public class Game : MonoBehaviour
         }
     }
 
+    [SerializeField] GameScene _gameUI = null;
+
     private static Game _i = null;
     [SerializeField] Board _board = null;
 
     // 맵에 따른 원숭이 갯수 
     private List<int> _invenMoney = new List<int>();
-
     private List<int> _mapIDList = new List<int>();
 
     public int GameScore = 0;
     private int _subScore = 0;
 
     List<GameObject> _trailDottedList = new List<GameObject>();
-
-
     [SerializeField] Loading _loading = null;
+
+    private int _bananaDestroyCnt = 0;
+    private int _mapIndex = 0;
+
+    public float GameTimer { get { return Def.TIMER - (Time.time - _gameStartTime); } }
+    private float _gameStartTime = 0.0f;
+
+
 
     private void Awake()
     {
@@ -54,6 +59,8 @@ public class Game : MonoBehaviour
         _trailDottedList.Add(obj);
     }
 
+ 
+
     /// <summary>
     /// 보드가 준비되기 전까지는 파괴 되지 않음
     /// </summary>
@@ -63,36 +70,65 @@ public class Game : MonoBehaviour
         return _board.IsReady;
     }
 
-
-
     private void Start()
     {
         GameScore = 0;
         Load(0);
+        
+        _gameUI.SetScore(GameScore);
     }
 
-    public void AddScore(int score)
+    public void AddScore(Vector2 position, int score)
     {
         GameScore += score;
         _subScore -= score;
+
+        _gameUI.AddScore(Camera.main.WorldToScreenPoint(position), score);
+        _gameUI.SetScore(GameScore);
     }
 
     public bool CheckScore()
     {
         return GameScore == Mathf.Abs(_subScore);
     }
-    
+
+    public void DestroyBanana()
+    {
+        
+        _bananaDestroyCnt++;
+
+        if (_board.CompareBanana(_bananaDestroyCnt))
+        {
+            _mapIndex++;
+
+            if (_mapIndex < _mapIDList.Count)
+            {
+
+
+                clearTrajectory();
+
+                _bananaDestroyCnt = 0;
+                StartCoroutine(loadDelayLoadMap(2.0f));
+            }
+        }
+        
+    }
 
     public void Load(int randomSeed)
     {
-        _loading.Show();
 
+        _mapIndex = 0;
+        _loading.Show();
+        _gameUI.SetStage(_mapIndex);
         //Map Seed
         Random.InitState(randomSeed);
+        
+
 
         _mapIDList.Add(350);
         _mapIDList.Add(Random.Range(100, 200));
         _mapIDList.Add(Random.Range(300, 500));
+        _bananaDestroyCnt = 0;
 
         //MapLoad 완료 체크 - 맵 오브젝트 생성 해놓기
         _board.Init(_mapIDList.ToArray(),
@@ -102,7 +138,22 @@ public class Game : MonoBehaviour
                 StartCoroutine(startAction());
             });
     }
-    
+
+
+    IEnumerator loadDelayLoadMap(float delay)
+    {
+
+        yield return new WaitForSeconds(delay);
+        _loading.Show();
+        _board.LoadMap(_mapIDList[_mapIndex],
+               () =>
+               {
+                   _loading.CloseLoading(0.5f);
+                   _gameUI.SetStage(_mapIndex);
+                   StartCoroutine(startAction());
+               });
+        
+    }
     
 
     IEnumerator startAction()
@@ -113,6 +164,7 @@ public class Game : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         //게임시작 액션
         _board.PlayAction();
+        _gameStartTime = Time.time;
     }
 
     /// <summary>
@@ -121,15 +173,16 @@ public class Game : MonoBehaviour
     /// <param name="index"></param>
     public void Reload(int index)
     {
-        _board.SetReload(index);
-        
-
+        if(_board.SetReload(index))
+            _gameUI.SetMonkeyInfo(index);
     }
 
     public void TunStart()
     {
 
     }
+
+
 
     /// <summary>
     /// 턴 종료 - 장전 할 객체가 있는지 체크 
@@ -146,21 +199,23 @@ public class Game : MonoBehaviour
 
     private void clearTrajectory()
     {
+
         for (int i = 0; i < _trailDottedList.Count; ++i)
             GB.ObjectPooling.I.Destroy(_trailDottedList[i]);
         _trailDottedList.Clear();
+
     }
 
 
     private void OnTouch(TouchPhase phase, int id,float x, float y, float dx, float dy)
     {
-
+        
         Vector3 touchPosition = CunverterTouchPoint(new Vector2(x, y));
         touchPosition = paserTouchToCamPoint(touchPosition);
 
-
         switch (phase)
         {
+
             case TouchPhase.Began:
                 _board.CheckShootReady(touchPosition);
                 break;
@@ -174,8 +229,6 @@ public class Game : MonoBehaviour
 
                 if (_board.Shoot())
                     clearTrajectory();
-
-
                 break;
         }
 

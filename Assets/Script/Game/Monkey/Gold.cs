@@ -58,6 +58,7 @@ public class Gold : Monkey
     {
         if (state != State.Shoot) return;
         if (isUseSkill) return;
+
         isUseSkill = true;
 
         //분신 생성
@@ -111,24 +112,6 @@ public class Gold : Monkey
     public override void OnCollisionEnter2D(Collision2D coll)
     {
         base.OnCollisionEnter2D(coll);
-    }
-
-
-    private GameObject loadPoolingObject(string path, string key)
-    {
-        GameObject oj = null;
-        if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
-        {
-            oj = GB.ObjectPooling.I.Import(key);
-        }
-        else
-        {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
-            GB.ObjectPooling.I.Registration(key, oj, true);
-        }
-
-        return oj;
     }
 
 }

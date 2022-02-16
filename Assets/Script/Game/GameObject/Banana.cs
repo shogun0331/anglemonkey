@@ -60,21 +60,13 @@ public class Banana : MonoBehaviour
 
     private void DestroyBanana()
     {
-
+        if (_isDestroy) return;
         _isDestroy = true;
-        //GameObject oj = null;
-        //switch (MyTexture)
-        //{
-        //    case OutsideTexture.Ice:
-        //        loadPoolingObject(Def.PATH_EFFECT_ICE, Def.EFFECT_ICE).transform.position = transform.position;
-        //        break;
-        //    case OutsideTexture.Stone:
-        //        loadPoolingObject(Def.PATH_EFFECT_ROCK, Def.EFFECT_ROCK).transform.position = transform.position;
-        //        break;
-        //    case OutsideTexture.Wood:
-        //        loadPoolingObject(Def.PATH_EFFECT_WOOD, Def.EFFECT_WOOD).transform.position = transform.position;
-        //        break;
-        //}
+
+        GameObject oj =  loadPoolingObject(Def.PATH_EFFECT_WOOD, Def.EFFECT_WOOD);
+        oj.transform.position = transform.position;
+
+        Game.I.DestroyBanana();
 
         gameObject.SetActive(false);
 
@@ -91,8 +83,20 @@ public class Banana : MonoBehaviour
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+           
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 

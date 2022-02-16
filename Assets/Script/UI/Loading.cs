@@ -12,6 +12,8 @@ public class Loading : MonoBehaviour
 
     float _speed = 1.0f;
 
+    private bool _isAction = false;
+
     public void Show()
     {
         _panel.color = Color.white;
@@ -19,6 +21,8 @@ public class Loading : MonoBehaviour
 
     public void OpenLoading(float speed)
     {
+        if (_isAction) return;
+        _isAction = true;
         _speed = speed;
         _targetColor = Color.white;
         _panel.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
@@ -30,15 +34,20 @@ public class Loading : MonoBehaviour
 
     public void CloseLoading(float speed)
     {
+        if (_isAction) return;
+
+        _isAction = true;
         _speed = speed;
         _targetColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
         _panel.color = Color.white;
         StartCoroutine(playLoading());
+
     }
 
     IEnumerator playLoading()
     {
         float time = 0.0f;
+
         while (true)
         {
             yield return new WaitForSeconds(Time.deltaTime);
@@ -48,6 +57,7 @@ public class Loading : MonoBehaviour
 
             if (time > 1.0f)
             {
+                _isAction = false;
                 _panel.color = _targetColor;
                 time = 0.0f;
                 yield break;

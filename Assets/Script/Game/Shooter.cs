@@ -89,6 +89,8 @@ public class Shooter : MonoBehaviour
         _leftBandLine.SetPosition(1, _leftBandLine.transform.position);
         _rightBandLine.SetPosition(1, _rightBandLine.transform.position);
 
+
+
         _bullet = null;
         state = State.NotReady;
 
@@ -258,8 +260,20 @@ public class Shooter : MonoBehaviour
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 

@@ -53,7 +53,6 @@ public class Brick : MonoBehaviour
             _sprRenderModel = GetComponent<SpriteRenderer>();
         }
 
-
         if (_sprRenderModel != null)
         {
             _sprRenderModel.sprite = _sprOrijin;
@@ -97,7 +96,7 @@ public class Brick : MonoBehaviour
 
         _isDestroy = true;
 
-        Game.I.AddScore(_model.Score);
+        Game.I.AddScore(transform.position,_model.Score);
         
         switch (MyTexture)
         {
@@ -112,8 +111,7 @@ public class Brick : MonoBehaviour
                 break;
         }
 
-        
-        //애니메이션 할지 결정
+        //애니메이션 할지 결정 
         if (damage > 10.0f &&  Random.value > 0.8f)
         {
             setTriger(true);

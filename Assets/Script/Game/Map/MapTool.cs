@@ -41,9 +41,15 @@ public class MapTool : MonoBehaviour
 
     public List<Item> _itemList = new List<Item>();
 
+
     private List<int> _mokeyList = new List<int>();
     public List<int> MonkeyList { get { return _mokeyList; } }
-    
+
+
+
+    public float LeftX;
+    public float RightX;
+
     private void Start()
     {
         //Load(1);
@@ -276,6 +282,9 @@ public class MapTool : MonoBehaviour
                             oj.transform.position = position;
                             oj.transform.rotation = rotation;
                             oj.transform.localScale = scale;
+
+                            if (oj.GetComponent<Rigidbody2D>() != null)
+                                oj.GetComponent<Rigidbody2D>().isKinematic = true;
                             _gameObjectList.Add(oj);
                             break;
                         }
@@ -301,7 +310,6 @@ public class MapTool : MonoBehaviour
                     oj.transform.position = position;
                     
                     _gameObjectList.Add(oj);
-
                     break;
 
                 case TYPE_HINGE:
@@ -320,12 +328,15 @@ public class MapTool : MonoBehaviour
                 else
                     oj.AddComponent<ObjectTag>().Index = item.ID;
             }
+
+
+
         }
 
 
 
 
-        
+
 
         for (int i = 0; i < hingeList.Count; ++i)
         {
@@ -367,15 +378,16 @@ public class MapTool : MonoBehaviour
             }
         }
 
+     LeftX = screenLeft;
+     RightX = screenRight;
 
-        float left = Mathf.Abs(screenLeft);
+    float left = Mathf.Abs(screenLeft);
         float right = Mathf.Abs(screenRight);
 
         float screenScale = left + right;
         float gap = (right - left) * 0.5f;
 
-
-        Camera.main.orthographicSize = screenScale * 0.28f;
+        Camera.main.orthographicSize = screenScale * 0.275f;
         Camera.main.transform.position = new Vector3(gap, Camera.main.transform.position.y, -10.0f);
 
     }
@@ -423,7 +435,7 @@ public class MapTool : MonoBehaviour
         Rect rect = new Rect(0, 0, w, h * 2 / 100);
         style.fontSize = h * 2 / 40;
         style.normal.textColor = Color.red;
-        string text = "Map ID : " + _mapID + "\nKey : W,A,S,D";
+        string text = "Map : " + _mapID + "\nKey : 1 - 8 \n";
         GUI.Label(rect, text, style);
 
     }
@@ -431,7 +443,6 @@ public class MapTool : MonoBehaviour
     int _tmpMapid = 1;
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.D))
         {
             if (_isLoading) return;
@@ -496,9 +507,5 @@ public class MapTool : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         result?.Invoke(true);
     }
-
-
-
-
 
 }

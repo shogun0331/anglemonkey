@@ -66,9 +66,22 @@ public class DottedGuide : MonoBehaviour
             }
             else
             {
-                GameObject resources = Resources.Load(PATH_DOTTED) as GameObject;
-                oj = Instantiate(resources, transform);
+                GameObject resources = null;
+
+                if (GB.ObjectPooling.I.CheckModel("Dotted"))
+                {
+                    resources = GB.ObjectPooling.I.GetModel("Dotted");
+                    oj = Instantiate(resources);
+                }
+                else
+                {
+                    resources = Resources.Load<GameObject>(PATH_DOTTED);
+                    GB.ObjectPooling.I.RegistModel("Dotted", resources);
+                    oj = Instantiate(resources);
+                }
+
                 GB.ObjectPooling.I.Registration("Dotted", oj, true);
+
             }
 
             if (oj == null) return;

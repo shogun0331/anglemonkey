@@ -28,7 +28,7 @@ namespace GB
 
         private static ObjectPooling _i = null;
         private Dictionary<string, Stack<GameObject>> _pocket = new Dictionary<string, Stack<GameObject>>();
-
+        private Dictionary<string, GameObject> _models = new Dictionary<string, GameObject>();
         /// <summary>
         ///  풀링 할수 있는 갯수 체크 
         /// </summary>
@@ -62,6 +62,27 @@ namespace GB
             }
 
             return null;
+        }
+
+        public bool RegistModel(string key, GameObject obj)
+        {
+            if (obj == null) return false;
+            if (_models.ContainsKey(key)) return false;
+
+            _models.Add(key, obj);
+            return true;
+        }
+
+        public bool CheckModel(string key)
+        {
+
+            return _models.ContainsKey(key);
+        }
+
+
+        public GameObject GetModel(string key)
+        {
+            return _models[key];
         }
 
         public void Registration(string key, GameObject obj, bool isFiled)

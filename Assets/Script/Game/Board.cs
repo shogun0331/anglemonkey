@@ -9,7 +9,6 @@ public class Board : MonoBehaviour
 
     List<GameObject> _brickList = new List<GameObject>();
     List<GameObject> _bananaList = new List<GameObject>();
-    
     Shooter _shooter = null;
     public bool IsReady { get { return _isReady; } }
     
@@ -19,13 +18,23 @@ public class Board : MonoBehaviour
 
     public enum State { None = 0, Shoot, Ready , LoadMap,LoadMapComplete,StartAction,Aiming }
     public State BoardState = State.None;
-    
-    
+
+
+
+    public bool CompareBanana(int cnt)
+    {
+        return cnt >= _bananaList.Count;
+        
+    }
+
+
     public void Init(int[] mapIds, System.Action success)
     {
         if (_isReady) return;
         if (mapIds.Length != 3) return;
 
+
+   
 
         BoardState = State.LoadMap;
         //3개의맵 로드  - 오브젝트 준비 - 최초 맵 재 로드  
@@ -45,12 +54,17 @@ public class Board : MonoBehaviour
                      {
                          if (objs[i].GetComponent<Brick>() != null)
                          {
+                             if (objs[i].GetComponent<Rigidbody2D>() != null)
+                                 objs[i].GetComponent<Rigidbody2D>().isKinematic = true;
+
                              _brickList.Add(objs[i]);
                              objs[i].SetActive(false);
                          }
 
                          if (objs[i].GetComponent<Banana>() != null)
                          {
+                             if (objs[i].GetComponent<Rigidbody2D>() != null)
+                                 objs[i].GetComponent<Rigidbody2D>().isKinematic = true;
                              _bananaList.Add(objs[i]);
                              objs[i].SetActive(false);
                          }
@@ -74,8 +88,9 @@ public class Board : MonoBehaviour
 
     public void LoadMap(int mapId,System.Action success)
     {
-
+        _isReady = false;
         BoardState = State.LoadMap;
+
         _mapTool.Load(mapId, (result) =>
         {
             _brickList.Clear();
@@ -110,6 +125,8 @@ public class Board : MonoBehaviour
         });
     }
 
+    
+
     public void PlayAction()
     {
 
@@ -136,7 +153,6 @@ public class Board : MonoBehaviour
         int bananaIdx = 0;
 
         yield return new WaitForEndOfFrame();
-
 
 
         //아래 있는 블럭부터 정렬
@@ -226,9 +242,9 @@ public class Board : MonoBehaviour
     /// 원숭이 새총에 장전
     /// </summary>
     /// <param name="index"></param>
-    public void SetReload(int index)
+    public bool SetReload(int index)
     {
-        if (!_isReady) return;
+        if (!_isReady) return false;
         GameObject oj = null;
 
         switch (index)
@@ -253,14 +269,42 @@ public class Board : MonoBehaviour
                 oj = loadPoolingObject(Def.PATH_MONKEY_LEMUR, Def.MONKEY_LEMUR);
                 break;
 
-        }
+            case (int)Def.Monkey.Nasalis:
+                oj = loadPoolingObject(Def.PATH_MONKEY_NASALIS, Def.MONKEY_NASALIS);
+                break;
 
+            case (int)Def.Monkey.Hylobatidae:
+                oj = loadPoolingObject(Def.PATH_MONKEY_HYLOBATIDAE, Def.MONKEY_HYLOBATIDAE);
+                break;
+
+            case (int)Def.Monkey.Gorilla:
+                oj = loadPoolingObject(Def.PATH_MONKEY_GORILLA, Def.MONKEY_GORILLA);
+                break;
+
+        }
+        
         oj.GetComponent<Monkey>().Ready();
 
             //장전
          _shooter.SetReady(oj);
          _bullet = oj;
+
+        return true;
         
+    }
+
+    public void ClearBullet()
+    {
+        if (_shooter == null) return;
+        if (_shooter.Bullet != null)
+        {
+            GB.ObjectPooling.I.Destroy(_shooter.Bullet);
+            _shooter.Init();
+        }
+
+
+
+        _bullet = null;
     }
 
     private void Update()
@@ -315,8 +359,20 @@ public class Board : MonoBehaviour
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 
@@ -347,6 +403,8 @@ public class Board : MonoBehaviour
     {
         if (!_isReady) return false;
         if (_shooter.state != Shooter.State.Aim) return false;
+
+        
         _shooter.Shoot();
 
 

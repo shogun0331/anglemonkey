@@ -60,6 +60,7 @@ public class Lemur : Monkey
 
         //범위 내에 있는 충돌체 모두 호출
         Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position, circleSize);
+
         for (int i = 0; i < colls.Length; i++)
         {
             if (colls[i].GetComponent<Brick>() != null)
@@ -94,8 +95,20 @@ public class Lemur : Monkey
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 

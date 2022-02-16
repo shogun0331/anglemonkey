@@ -31,9 +31,22 @@ public class Monkey : MonoBehaviour
     bool _isInit = false;
     private void Start()
     {
+
         Init();
     }
 
+
+    public void OnEnable()
+    {
+        Init();
+        StopAllCoroutines();
+        _isGoHome = false;
+
+        GetComponent<Rigidbody2D>().mass = _mass;
+        GetComponent<Rigidbody2D>().angularDrag = _angularDrag;
+        GetComponent<Rigidbody2D>().gravityScale = _gravityScale;
+
+    }
     public void Init()
     {
         if (_isInit) return;
@@ -82,7 +95,7 @@ public class Monkey : MonoBehaviour
     {
         if (state == State.Shoot || state == State.Skill)
         {
-            
+    
             changeState(State.ShootEnd);
         }
     }
@@ -92,7 +105,7 @@ public class Monkey : MonoBehaviour
         Init();
         changeState(State.Shoot);
 
-
+        _isGoHome = false;
         Rigidbody2D rg = GetComponent<Rigidbody2D>();
         rg.angularVelocity = 0.0f;
         rg.angularDrag = _angularDrag;
@@ -101,17 +114,20 @@ public class Monkey : MonoBehaviour
         Vector2 vel = direction * power;
         rg.isKinematic = false;
         rg.velocity = vel;
+   
     }
 
 
     public virtual void Shoot(Vector2 velocity)
     {
+        _isGoHome = false;
         changeState(State.Shoot);
         Rigidbody2D rg = GetComponent<Rigidbody2D>();
         rg.angularVelocity = 0.0f;
         rg.gravityScale = 1.0f;
         rg.isKinematic = false;
         rg.velocity = velocity;
+
     }
 
 
@@ -227,8 +243,11 @@ public class Monkey : MonoBehaviour
                 GetComponent<CircleCollider2D>().isTrigger = false;
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 GetComponent<Rigidbody2D>().isKinematic = true;
-                GetComponent<Rigidbody2D>().gravityScale = 1.0f;
-               gameObject.SetActive(false);
+                GetComponent<Rigidbody2D>().gravityScale = _gravityScale;
+
+                Destroy(gameObject);
+                //GB.ObjectPooling.I.Destroy(gameObject);
+                
                 yield break;
             }
         }
@@ -256,6 +275,11 @@ public class Monkey : MonoBehaviour
 
             Rigidbody2D rg = GetComponent<Rigidbody2D>();
             transform.right = rg.velocity;
+
+
+            if (transform.position.y < -10.0f)
+                ShootEnd();
+            
         }
     }
 
@@ -264,6 +288,15 @@ public class Monkey : MonoBehaviour
     {
         GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2);
         oj.transform.position = coll.contacts[0].point;
+
+        if (state == State.Shoot)
+        {
+            oj = loadPoolingObject(Def.PATH_EFFECT_HIT, Def.EFFECT_HIT);
+            oj.transform.position = coll.contacts[0].point;
+        }
+
+
+
 
         ShootEnd();
 
@@ -274,7 +307,7 @@ public class Monkey : MonoBehaviour
         }
     }
 
-    private GameObject loadPoolingObject(string path, string key)
+    protected GameObject loadPoolingObject(string path, string key)
     {
         GameObject oj = null;
         if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
@@ -283,8 +316,20 @@ public class Monkey : MonoBehaviour
         }
         else
         {
-            GameObject resources = Resources.Load<GameObject>(path);
-            oj = Instantiate(resources);
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
             GB.ObjectPooling.I.Registration(key, oj, true);
         }
 
