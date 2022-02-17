@@ -21,13 +21,32 @@ public class GameScene : UIScreen
     [SerializeField] Transform _scores = null;
 
 
-    
+    [SerializeField] CardControl _cardControl = null;
 
     private void Awake()
     {
         UIManager.Instance.registScreen(Def.SCENE_GAME, this);
     }
 
+    public void AddMonkey(int index)
+    {
+        _cardControl.Add(index);
+    }
+
+    public void DeleteMonkey(int index)
+    {
+        _cardControl.Delete(index);
+    }
+
+    public void InitCards()
+    {
+        _cardControl.InitCards();
+    }
+
+    public void ChiseCard(int index)
+    {
+        _cardControl.ChiseCard(index);
+    }
     public void AddScore(Vector2 position, int score)
     {
         GameObject oj = loadPoolingObject(Def.PATH_EFFECT_SCORE, Def.EFFECT_SCORE);

@@ -189,9 +189,15 @@ public class Shooter : MonoBehaviour
         if (_bullet != null)
         {
             if (_dragPosition.x > _aimPoint.position.x)
+            {
                 _bullet.transform.localScale = new Vector3(1.0f, -1.0f, 1.0f);
+                _bullet.GetComponent<Monkey>().isLeft = true;
+            }
             else
+            {
                 _bullet.transform.localScale = Vector3.one;
+                _bullet.GetComponent<Monkey>().isLeft = false;
+            }
             
         }
 

@@ -26,7 +26,10 @@ public class Gold : Monkey
 
         base.Ready();
     }
-
+    protected override void ShootEnd()
+    {
+        base.ShootEnd();
+    }
     public override void Shoot(float power, Vector2 direction)
     {
         if (_rg == null) return;
@@ -42,7 +45,10 @@ public class Gold : Monkey
         {
             //점선을 위해 복사된 황금원숭이 그리기
             for (int i = 0; i < _copyObjs.Length; ++i)
+            {
+                if(_copyObjs[i]  != null)
                 _copyObjs[i].GetComponent<Monkey>().UpdateShoot();
+            }
         }
     }
 

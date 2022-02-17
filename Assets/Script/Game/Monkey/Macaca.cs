@@ -29,7 +29,10 @@ public class Macaca : Monkey
         _trail.enabled = false;
         base.Ready();
     }
-
+    protected override void ShootEnd()
+    {
+        base.ShootEnd();
+    }
     public override void Shoot(float power, Vector2 direction)
     {
         if (_rg == null) return;

@@ -13,7 +13,12 @@ public class Lemur : Monkey
         Idle();
 
     }
-
+    protected override void ShootEnd()
+    {
+        changeState(State.Bump, true);
+        //AddAnimationPlay("wing_02");
+        //base.ShootEnd();
+    }
     public override void Idle()
     {
         _rg.isKinematic = true;
@@ -43,7 +48,6 @@ public class Lemur : Monkey
     {
         _rg.isKinematic = false;
         base.Comback();
-
     }
 
 

@@ -46,7 +46,9 @@ public class Game : MonoBehaviour
     public float GameTimer { get { return Def.TIMER - (Time.time - _gameStartTime); } }
     private float _gameStartTime = 0.0f;
 
+    private List<int> _monkeyList = new List<int>();
 
+    private int _targetIndex = -1;
 
     private void Awake()
     {
@@ -59,6 +61,11 @@ public class Game : MonoBehaviour
         _trailDottedList.Add(obj);
     }
 
+
+    public void SetTargetIndex(int index)
+    {
+        _targetIndex = index;
+    }
  
 
     /// <summary>
@@ -99,6 +106,9 @@ public class Game : MonoBehaviour
 
         if (_board.CompareBanana(_bananaDestroyCnt))
         {
+            //클리어 보너스 
+            AddScore(Vector3.zero, 1000000);
+
             _mapIndex++;
 
             if (_mapIndex < _mapIDList.Count)
@@ -122,12 +132,17 @@ public class Game : MonoBehaviour
         _gameUI.SetStage(_mapIndex);
         //Map Seed
         Random.InitState(randomSeed);
-        
 
 
+
+        //_mapIDList.Add(350);
+        //_mapIDList.Add(Random.Range(100, 200));
+        //_mapIDList.Add(Random.Range(300, 500));
+
+        _mapIDList.Add(1);
+        _mapIDList.Add(2);
         _mapIDList.Add(350);
-        _mapIDList.Add(Random.Range(100, 200));
-        _mapIDList.Add(Random.Range(300, 500));
+
         _bananaDestroyCnt = 0;
 
         //MapLoad 완료 체크 - 맵 오브젝트 생성 해놓기
@@ -144,6 +159,8 @@ public class Game : MonoBehaviour
     {
 
         yield return new WaitForSeconds(delay);
+        _gameUI.InitCards();
+
         _loading.Show();
         _board.LoadMap(_mapIDList[_mapIndex],
                () =>
@@ -158,13 +175,41 @@ public class Game : MonoBehaviour
 
     IEnumerator startAction()
     {
+        
         yield return new WaitForEndOfFrame();
         //카메라 위치 사이즈 세팅
         _board.SetCam();
         yield return new WaitForSeconds(0.5f);
+
         //게임시작 액션
         _board.PlayAction();
         _gameStartTime = Time.time;
+
+        yield return new WaitForSeconds(1.0f);
+
+        _monkeyList = _board.GetMonkeyList();
+
+        for (int i = 0; i < _monkeyList.Count; ++i)
+        {
+            _gameUI.AddMonkey(_monkeyList[i]);
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        ChoiseCard(0);
+
+
+    }
+
+
+    public void ShootReady()
+    {
+        ChoiseCard(0);
+    }
+    public void ChoiseCard(int index)
+    {
+        _gameUI.ChiseCard(index);
     }
 
     /// <summary>
@@ -228,7 +273,12 @@ public class Game : MonoBehaviour
                 _board.MonkeySkill();
 
                 if (_board.Shoot())
+                {
+                    _gameUI.DeleteMonkey(_targetIndex);
+                    _targetIndex = -1;
                     clearTrajectory();
+                }
+
                 break;
         }
 

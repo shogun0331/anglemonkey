@@ -28,6 +28,11 @@ public class Board : MonoBehaviour
     }
 
 
+    public List<int> GetMonkeyList()
+    {
+        return _mapTool.MonkeyList;
+    }
+
     public void Init(int[] mapIds, System.Action success)
     {
         if (_isReady) return;
@@ -90,6 +95,12 @@ public class Board : MonoBehaviour
     {
         _isReady = false;
         BoardState = State.LoadMap;
+
+        if (_shooter != null)
+        {
+            if(_shooter.Bullet != null)
+            GB.ObjectPooling.I.Destroy(_shooter.Bullet);
+        }
 
         _mapTool.Load(mapId, (result) =>
         {

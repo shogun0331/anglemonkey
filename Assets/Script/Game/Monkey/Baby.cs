@@ -44,7 +44,10 @@ public class Baby : Monkey
         base.Comback();
     }
 
-
+    protected override void ShootEnd()
+    {
+        base.ShootEnd();
+    }
 
     /// <summary>
     /// Baby는 스킬 없음

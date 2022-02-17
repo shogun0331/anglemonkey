@@ -20,7 +20,10 @@ public class Papio : Monkey
         _rg.isKinematic = true;
         base.Idle();
     }
-
+    protected override void ShootEnd()
+    {
+        base.ShootEnd();
+    }
     public override void Ready()
     {
         isUseSkill = false;

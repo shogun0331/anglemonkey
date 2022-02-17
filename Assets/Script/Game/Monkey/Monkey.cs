@@ -56,17 +56,24 @@ public class Monkey : MonoBehaviour
         _isInit = true;
     }
 
-
-    private void changeState(State state)
+    protected void AddAnimationPlay(string animationName)
     {
+        _spine.AddPlay(animationName);
+    }
+
+
+    protected void changeState(State state,bool isAddAnim = false)
+    {
+
         this.state = state;
         if (_spine == null) return;
 
         switch (state)
         {
             case State.Idle:
-                if (Random.value < 0.5f) _spine.Play(ANIM_IDLE_1, true);
-                else _spine.Play(ANIM_IDLE_2, false);
+                    if (Random.value < 0.5f) _spine.Play(ANIM_IDLE_1, true);
+                    else _spine.Play(ANIM_IDLE_2, false);
+                
                 break;
 
             case State.Ready:
@@ -74,6 +81,7 @@ public class Monkey : MonoBehaviour
                 break;
 
             case State.Shoot:
+
                 _spine.Play(ANIM_SHOOT, true);
                 break;
 
@@ -82,7 +90,12 @@ public class Monkey : MonoBehaviour
                 break;
 
             case State.ShootEnd:
-                _spine.Play(ANIM_BUMP, false);
+                if (!isAddAnim)
+                    _spine.Play(ANIM_BUMP, false);
+                else
+                    _spine.AddPlay(ANIM_BUMP);
+                
+                    
                 break;
 
             case State.Skill:
@@ -91,11 +104,11 @@ public class Monkey : MonoBehaviour
         }
     }
 
-    protected void ShootEnd()
+    protected virtual void ShootEnd()
     {
         if (state == State.Shoot || state == State.Skill)
         {
-    
+            Game.I.ShootReady();
             changeState(State.ShootEnd);
         }
     }
@@ -114,7 +127,6 @@ public class Monkey : MonoBehaviour
         Vector2 vel = direction * power;
         rg.isKinematic = false;
         rg.velocity = vel;
-   
     }
 
 
@@ -184,7 +196,6 @@ public class Monkey : MonoBehaviour
                     rg.velocity = Vector3.zero;
                     rg.angularVelocity = 0.0f;
                     rg.isKinematic = false;
-
 
                     GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST1, Def.EFFECT_DUST1);
                     oj.transform.position = transform.position;
@@ -294,8 +305,6 @@ public class Monkey : MonoBehaviour
             oj = loadPoolingObject(Def.PATH_EFFECT_HIT, Def.EFFECT_HIT);
             oj.transform.position = coll.contacts[0].point;
         }
-
-
 
 
         ShootEnd();

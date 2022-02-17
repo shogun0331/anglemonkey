@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  _spine: {fileID: 0}
+  _spine: {fileID: 1488966958732183557}
   isLeft: 0
 --- !u!1 &1488966958732183576
 GameObject:

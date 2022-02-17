@@ -65,5 +65,8 @@ public class Hylobatidae : Monkey
     {
         base.OnCollisionEnter2D(coll);
     }
-
+    protected override void ShootEnd()
+    {
+        base.ShootEnd();
+    }
 }

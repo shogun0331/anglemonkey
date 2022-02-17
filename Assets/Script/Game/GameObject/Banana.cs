@@ -67,8 +67,11 @@ public class Banana : MonoBehaviour
         oj.transform.position = transform.position;
 
         Game.I.DestroyBanana();
+        Game.I.AddScore(transform.position, _score);
 
-        gameObject.SetActive(false);
+        GB.ObjectPooling.I.Destroy(gameObject);
+
+        //gameObject.SetActive(false);
 
 
     }

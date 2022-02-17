@@ -28,6 +28,12 @@ public class SpineRemote : MonoBehaviour
         _animation.AnimationState.SetAnimation(0, animationName, loop);
     }
 
+    public void AddPlay(string animationName)
+    {
+        if (_animation == null) return;
+        _animation.AnimationState.AddAnimation(1, animationName, false, 0.1f);
+    }
+    
     private void Update()
     {
         if (!_isLoop) return;

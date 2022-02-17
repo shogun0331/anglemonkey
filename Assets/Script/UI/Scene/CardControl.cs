@@ -18,18 +18,13 @@ public class CardControl : MonoBehaviour
     private int _targetIdx = -1;
 
 
-    private void Start()
-    {
-        for (int i = 0; i < 3; ++i)
-        {
-            Add(i);
-        }
-    }
+
 
 
     public void Add(int index)
     {
         GameObject card = loadPoolingObject(Def.PATH_CARD + index, Def.CARD + index);
+        card.GetComponent<Card>().Idle();
         card.transform.SetParent(transform);
         _cards.Add(card.GetComponent<Card>());
         sorting(_sortRight);
@@ -49,13 +44,33 @@ public class CardControl : MonoBehaviour
         sorting(_sortRight);
     }
 
+    public void InitCards()
+    {
+        for (int i = 0; i < _cards.Count; ++i)
+        {
+                _cards[i].Idle();
+                _cards[i].SetActiveButton(true);
+ 
+        }
+    }
+
     public void Clear()
     {
+
         for (int i = 0; i < _cards.Count; ++i)
             GB.ObjectPooling.I.Destroy(_cards[i].gameObject);
 
         _cards.Clear();
+
     }
+
+    public void ChiseCard(int index)
+    {
+        if(index < _cards.Count)
+        _cards[index].Click();
+    }
+
+    
 
     public void SelectCard(int index)
     {
@@ -65,20 +80,19 @@ public class CardControl : MonoBehaviour
         {
             if (i == index)
             {
-                
                 _cards[i].Shoot();
                 _cards[i].SetActiveButton(false);
             }
             else
             {
                 _cards[i].Idle();
-                _cards[i].GetComponent<RectTransform>().SetSiblingIndex (i);
+                //_cards[i].GetComponent<RectTransform>().SetSiblingIndex (i);
                 _cards[i].SetActiveButton(true);
             }
                 
         }
 
-        _cards[index].GetComponent<RectTransform>().SetAsLastSibling();
+        //_cards[index].GetComponent<RectTransform>().SetAsLastSibling();
 
 
 
