@@ -198,6 +198,9 @@ public class MapTool : MonoBehaviour
                     if (oj.GetComponent<Rigidbody2D>() != null)
                         oj.GetComponent<Rigidbody2D>().isKinematic = true;
 
+                    oj.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    oj.GetComponent<Rigidbody2D>().angularVelocity = 0.0f;
+
                     oj.GetComponent<Brick>().SetModel(mBrick);
 
                     _gameObjectList.Add(oj);
@@ -263,8 +266,11 @@ public class MapTool : MonoBehaviour
 
                     for (int j = 0; j < bananaModels.Length; ++j)
                     {
+
                         if (mBanana.Type == bananaModels[j].GetComponent<Banana>().Type)
                         {
+
+                            
 
                             if (GB.ObjectPooling.I.GetRemainingUses(bananaModels[j].name) > 0)
                             {
@@ -277,7 +283,7 @@ public class MapTool : MonoBehaviour
                             }
                             Banana banana = oj.GetComponent<Banana>();
                             banana.SetModel(mBanana);
-
+                            oj.SetActive(true);
                             oj.transform.SetParent(_bananaGroup);
                             oj.transform.position = position;
                             oj.transform.rotation = rotation;
@@ -294,17 +300,18 @@ public class MapTool : MonoBehaviour
                 case TYPE_SHOOTER:
                     position = PaserVec3(item.Position);
 
-                    GameObject tmp = Resources.Load(PATH_SHOOTER) as GameObject;
+                    oj = loadPoolingObject(PATH_SHOOTER, "Shooter");
+                    //GameObject tmp = Resources.Load(PATH_SHOOTER) as GameObject;
 
-                    if (GB.ObjectPooling.I.GetRemainingUses(tmp.name) > 0)
-                    {
-                        oj = GB.ObjectPooling.I.Import(tmp.name);
-                    }
-                    else
-                    {
-                        oj = Instantiate(tmp);
-                        GB.ObjectPooling.I.Registration(tmp.name, oj, true);
-                    }
+                    //if (GB.ObjectPooling.I.GetRemainingUses(tmp.name) > 0)
+                    //{
+                    //    oj = GB.ObjectPooling.I.Import(tmp.name);
+                    //}
+                    //else
+                    //{
+                    //    oj = Instantiate(tmp);
+                    //    GB.ObjectPooling.I.Registration(tmp.name, oj, true);
+                    //}
 
                     oj.transform.SetParent(transform);
                     oj.transform.position = position;
@@ -506,6 +513,35 @@ public class MapTool : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
         result?.Invoke(true);
+    }
+
+    private GameObject loadPoolingObject(string path, string key)
+    {
+        GameObject oj = null;
+        if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
+        {
+            oj = GB.ObjectPooling.I.Import(key);
+        }
+        else
+        {
+            GameObject resources = null;
+
+            if (GB.ObjectPooling.I.CheckModel(key))
+            {
+                resources = GB.ObjectPooling.I.GetModel(key);
+                oj = Instantiate(resources);
+            }
+            else
+            {
+                resources = Resources.Load<GameObject>(path);
+                GB.ObjectPooling.I.RegistModel(key, resources);
+                oj = Instantiate(resources);
+            }
+
+            GB.ObjectPooling.I.Registration(key, oj, true);
+        }
+
+        return oj;
     }
 
 }

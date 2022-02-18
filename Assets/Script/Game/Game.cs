@@ -139,7 +139,7 @@ public class Game : MonoBehaviour
         //_mapIDList.Add(Random.Range(100, 200));
         //_mapIDList.Add(Random.Range(300, 500));
 
-        _mapIDList.Add(1);
+        _mapIDList.Add(350);
         _mapIDList.Add(2);
         _mapIDList.Add(350);
 
@@ -179,7 +179,7 @@ public class Game : MonoBehaviour
         yield return new WaitForEndOfFrame();
         //카메라 위치 사이즈 세팅
         _board.SetCam();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         //게임시작 액션
         _board.PlayAction();

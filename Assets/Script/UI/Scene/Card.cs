@@ -8,25 +8,54 @@ public class Card : MonoBehaviour
     [SerializeField] GameObject _frame;
     [SerializeField] GameObject _monkey;
     [SerializeField] GameObject _shooter = null;
+    [SerializeField] GameObject _back;
     public int BtnIndex { get { return _btnIndex; } }
     private int _btnIndex = 0;
 
     private int _aniIndex = -1;
 
+    private bool _front = false;
+
+
+    private Vector2 _startPosition;
+
+
     private void Start()
     {
-        
-        Idle();
+        _startPosition = _monkey.transform.localPosition;
+
         if (_frame.GetComponent<Button>() == null)
             _frame.AddComponent<Button>();
 
         _frame.GetComponent<Button>().onClick.AddListener(Click);
     }
 
+    public void Init()
+    {
+        _monkey.transform.localPosition = _startPosition;
+        Close();
+    }
+
+    public void Open()
+    {
+        _front = true;
+        GetComponent<Animation>().Play("Card_Front");
+    }
+
+    public void Close()
+    {
+        _front = false;
+        _back.SetActive(true);
+        _frame.SetActive(false);
+        _shooter.SetActive(false);
+    }
+
+
+
     public void SetBtnIndex(int index)
     {
-    
         _btnIndex = index;
+        
     }
     public void SetActiveButton(bool isActive)
     {
@@ -36,6 +65,7 @@ public class Card : MonoBehaviour
     public void Idle()
     {
         if (_aniIndex == 0) return;
+       
         _aniIndex = 0;
         _monkey.GetComponent<SkeletonGraphic>().AnimationState.SetAnimation(0, "idle_01", true);
         GetComponent<Animation>().Play("Card_Idle");

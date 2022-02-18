@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CardControl : MonoBehaviour
 {
     //카드 사이즈
-    const float CARD_SIZE_X = 200.0f;
+    const float CARD_SIZE_X = 90.0f;
 
     //정렬시 카드 겹치는 갭
     const float OVERLAB_GAP = 0.3f;
@@ -17,33 +17,40 @@ public class CardControl : MonoBehaviour
 
     private int _targetIdx = -1;
 
+    [SerializeField] RectTransform _back = null;
 
 
+    private void Awake()
+    {
+        Debug.Log(transform.position);
+    }
 
 
     public void Add(int index)
     {
         GameObject card = loadPoolingObject(Def.PATH_CARD + index, Def.CARD + index);
+        card.GetComponent<Rigidbody2D>().isKinematic = true;
         card.GetComponent<Card>().Idle();
+        card.GetComponent<Card>().Open();
         card.transform.SetParent(transform);
+        card.GetComponent<RectTransform>().localPosition = new Vector3(CARD_SIZE_X, 0.0f, 0.0f);
+        
         _cards.Add(card.GetComponent<Card>());
         sorting(_sortRight);
     }
 
     public void Delete(int index)
     {
-        GB.ObjectPooling.I.Destroy(_cards[index].gameObject);
+        //_cards[_targetIdx].Init();
+        //GB.ObjectPooling.I.Destroy(_cards[index].gameObject);
+        _cards[_targetIdx].GetComponent<Rigidbody2D>().isKinematic = false;
+        _cards[_targetIdx].GetComponent<Rigidbody2D>().AddForce(Vector2.up * 50000.0f + Vector2.left * 50000);
+        _cards[_targetIdx].GetComponent<Rigidbody2D>().AddTorque(100.0f);
         _cards.RemoveAt(index);
          sorting(_sortRight);
     }
 
-    public void Use()
-    {
-        GB.ObjectPooling.I.Destroy(_cards[_targetIdx].gameObject);
-        _cards.RemoveAt(_targetIdx);
-        sorting(_sortRight);
-    }
-
+    
     public void InitCards()
     {
         for (int i = 0; i < _cards.Count; ++i)
@@ -58,7 +65,10 @@ public class CardControl : MonoBehaviour
     {
 
         for (int i = 0; i < _cards.Count; ++i)
+        {
+            _cards[i].Init();
             GB.ObjectPooling.I.Destroy(_cards[i].gameObject);
+        }
 
         _cards.Clear();
 
@@ -86,13 +96,13 @@ public class CardControl : MonoBehaviour
             else
             {
                 _cards[i].Idle();
-                //_cards[i].GetComponent<RectTransform>().SetSiblingIndex (i);
+                _cards[i].GetComponent<RectTransform>().SetSiblingIndex (_cards.Count - i);
                 _cards[i].SetActiveButton(true);
             }
                 
         }
 
-        //_cards[index].GetComponent<RectTransform>().SetAsLastSibling();
+        _cards[index].GetComponent<RectTransform>().SetAsLastSibling();
 
 
 
@@ -112,7 +122,10 @@ public class CardControl : MonoBehaviour
     private void sorting(bool right)
     {
         for (int i = 0; i < _cards.Count; ++i)
+        {
             _cards[i].SetBtnIndex(i);
+            _cards[i].GetComponent<RectTransform>().localPosition = new Vector3(CARD_SIZE_X  + (i * CARD_SIZE_X * 0.8f), 0.0f, 0.0f);
+        }
 
     }
 
