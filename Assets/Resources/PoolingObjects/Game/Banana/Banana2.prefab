@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 1
   _hp: 0
-  _score: 100000
+  _score: 1000
 --- !u!1 &2078912968436465308
 GameObject:
   m_ObjectHideFlags: 0

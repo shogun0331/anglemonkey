@@ -26,7 +26,6 @@ public class Banana : MonoBehaviour
 
     public void SetModel(ModelBanana banana)
     {
-
         _model = banana;
         _hp = _model.Hp;
         _isDestroy = false;
@@ -69,10 +68,8 @@ public class Banana : MonoBehaviour
         Game.I.DestroyBanana();
         Game.I.AddScore(transform.position, _score);
 
-        GB.ObjectPooling.I.Destroy(gameObject);
-
-        //gameObject.SetActive(false);
-
+        Destroy(gameObject);
+        
 
     }
 

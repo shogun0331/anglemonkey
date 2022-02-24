@@ -10,6 +10,7 @@ public class Board : MonoBehaviour
     List<GameObject> _brickList = new List<GameObject>();
     List<GameObject> _bananaList = new List<GameObject>();
     Shooter _shooter = null;
+
     public bool IsReady { get { return _isReady; } }
     
     private bool _isReady = false;
@@ -19,36 +20,59 @@ public class Board : MonoBehaviour
     public enum State { None = 0, Shoot, Ready , LoadMap,LoadMapComplete,StartAction,Aiming }
     public State BoardState = State.None;
 
-
+    List<int>[] _monkeyLists = new List<int>[3];
 
     public bool CompareBanana(int cnt)
     {
         return cnt >= _bananaList.Count;
-        
     }
 
-
-    public List<int> GetMonkeyList()
+    public List<int> GetMonkeyList(int mapIndex)
     {
-        return _mapTool.MonkeyList;
+        return _monkeyLists[mapIndex];
     }
 
+    public void UseMonkey(int mapIndex,int index)
+    {
+        //if (_monkeyLists.Length <= mapIndex) return;
+        //if (_monkeyLists[mapIndex].Count <= index) return;
+        //_monkeyLists[mapIndex].RemoveAt(index);
+    }
+
+    public int GetMonkeyCount()
+    {
+        int add = 0;
+        for (int i = 0; i < _monkeyLists.Length; ++i)
+            add += _monkeyLists[i].Count;
+
+        return add;
+    }
+ 
     public void Init(int[] mapIds, System.Action success)
     {
         if (_isReady) return;
         if (mapIds.Length != 3) return;
 
-
-   
+        for (int i = 0; i < mapIds.Length; ++i)
+            _monkeyLists[i] = new List<int>();
+        _monkeyLists = new List<int>[3];
 
         BoardState = State.LoadMap;
+   
+
         //3개의맵 로드  - 오브젝트 준비 - 최초 맵 재 로드  
         _mapTool.Load(mapIds[2], (result1) =>
          {
+             copyMonkeyList(2, _mapTool.MonkeyList.ToArray());
+
              _mapTool.Load(mapIds[1], (result2) =>
              {
+                 copyMonkeyList(1, _mapTool.MonkeyList.ToArray());
+
                  _mapTool.Load(mapIds[0], (result3) =>
                  {
+                     copyMonkeyList(0, _mapTool.MonkeyList.ToArray());
+
                      _brickList.Clear();
                      _bananaList.Clear();
                      _shooter = null;
@@ -79,17 +103,24 @@ public class Board : MonoBehaviour
 
                          if(_shooter != null)
                          _shooter.Init();
+
                      }
-
                      
-                     success?.Invoke();
                      BoardState = State.LoadMapComplete;
-
+                     success?.Invoke();
                  });
              });
          });
-
     }
+
+    private void copyMonkeyList(int index, int[] arrInt)
+    {
+        _monkeyLists[index] = new List<int>();
+
+        for (int i = 0; i < arrInt.Length; ++i)
+            _monkeyLists[index].Add(arrInt[i]);
+    }
+
 
     public void LoadMap(int mapId,System.Action success)
     {
@@ -136,11 +167,8 @@ public class Board : MonoBehaviour
         });
     }
 
-    
-
     public void PlayAction()
     {
-
         StartCoroutine(startAction());
     }
 
@@ -148,6 +176,7 @@ public class Board : MonoBehaviour
     {
         //카메라 세팅 
         _mapTool.SetCamera();
+
     }
 
 
@@ -304,6 +333,12 @@ public class Board : MonoBehaviour
         
     }
 
+    public GameObject GetBullet()
+    {
+        return _shooter.Bullet;
+    }
+
+
     public void ClearBullet()
     {
         if (_shooter == null) return;
@@ -312,8 +347,6 @@ public class Board : MonoBehaviour
             GB.ObjectPooling.I.Destroy(_shooter.Bullet);
             _shooter.Init();
         }
-
-
 
         _bullet = null;
     }

@@ -6,4 +6,5 @@ namespace GB
     {
         public string Name = string.Empty;
     }
+
 }

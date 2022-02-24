@@ -9,13 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6162889463574321030}
-  - component: {fileID: 6162889463574321031}
   - component: {fileID: 7261104835172208653}
   - component: {fileID: 8809398862387746934}
   - component: {fileID: 4243826938335786205}
   m_Layer: 6
   m_Name: Hylobatidae
-  m_TagString: Untagged
+  m_TagString: Monkey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -35,21 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6162889463574321031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6162889463574321029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d25ad4bce4ef341a4850c12a03abf1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
-  _spine: {fileID: 6162889465303656717}
-  isLeft: 0
 --- !u!50 &7261104835172208653
 Rigidbody2D:
   serializedVersion: 4
@@ -99,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc211b84354aa7540af194837dd7f3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  state: 9
   _spine: {fileID: 6162889465303656717}
   isLeft: 0
 --- !u!1 &6162889465303656720

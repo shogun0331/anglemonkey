@@ -18,12 +18,15 @@ public class MapTool : MonoBehaviour
     Transform _monkeyGroup;
     Transform _bananaGroup;
     Transform _springGroup;
+    Transform _bonusGroup;
 
     const string PATH_BRICK = "PoolingObjects/Game/Brick";
     const string PATH_GROUND = "PoolingObjects/Game/Ground";
     const string PATH_BANANA = "PoolingObjects/Game/Banana";
     const string PATH_SHOOTER = "PoolingObjects/Game/Shooter/Shooter";
     const string PATH_SPRING = "PoolingObjects/Game/Spring/Spring";
+    const string PATH_BONUS = "PoolingObjects/Game/Bonus";
+    const string PATH_MAP = "Map";
 
 
     const string TYPE_BG = "BG";
@@ -34,6 +37,7 @@ public class MapTool : MonoBehaviour
     const string TYPE_SPRING = "Spring";
     const string TYPE_SHOOTER = "Shooter";
     const string TYPE_HINGE = "HingeJoint2D";
+    const string TYPE_BONUS = "Bonus";
 
     public Vector2 MapScale;
 
@@ -49,11 +53,79 @@ public class MapTool : MonoBehaviour
 
     public float LeftX;
     public float RightX;
+    [SerializeField] GameObject[] _brickModels = null;
+    [SerializeField] GameObject[] _groundModels = null;
+    [SerializeField] GameObject[] _bananaModels = null;
+    [SerializeField] GameObject[] _bonusModels = null;
+
+    [SerializeField] TextAsset _mapLevel = null;
+
+
+    public void PaserMapLevel()
+    {
+        string[] spritLine = _mapLevel.text.Split('\n');
+
+        List<int> easy = new List<int>();
+        List<int> nomal = new List<int>();
+        List<int> hard = new List<int>();
+
+        for (int i = 0; i < spritLine.Length; ++i)
+        {
+            string[] sprit = spritLine[i].Split(',');
+
+            if (sprit.Length == 3)
+            {
+                int num = -1;
+
+                if (int.TryParse(sprit[0], out num))
+                    easy.Add(num);
+                
+                if (int.TryParse(sprit[1], out num))
+                    nomal.Add(num);
+               
+                if (int.TryParse(sprit[2], out num))
+                    hard.Add(num);
+            }
+            else if (sprit.Length == 2)
+            {
+                int num = -1;
+
+                if (int.TryParse(sprit[0], out num))
+                    easy.Add(num);
+
+                if (int.TryParse(sprit[1], out num))
+                    nomal.Add(num);
+            }
+            else if (sprit.Length == 1)
+            {
+
+                int num = -1;
+
+                if (int.TryParse(sprit[0], out num))
+                    easy.Add(num);
+            }
+        }
+
+        Game.I.SetLevel(easy, nomal, hard);
+
+
+    }
+
 
     private void Start()
     {
         //Load(1);
         //SetCamera();
+        
+    }
+
+    public void LoadResources()
+    {
+            _brickModels = Resources.LoadAll<GameObject>(PATH_BRICK);
+            _groundModels = Resources.LoadAll<GameObject>(PATH_GROUND);
+            _bananaModels = Resources.LoadAll<GameObject>(PATH_BANANA);
+            _bonusModels = Resources.LoadAll<GameObject>(PATH_BONUS);
+
     }
 
     public void Load(int mapId,Action<bool> result)
@@ -64,8 +136,13 @@ public class MapTool : MonoBehaviour
     }
 
 
+
+
+
     private void load(int mapId)
     {
+        
+
         _mapID = mapId;
         _dicBrickModels.Clear();
         _dicGroundModels.Clear();
@@ -82,29 +159,31 @@ public class MapTool : MonoBehaviour
             _bananaGroup = new GameObject("Bananas").transform;
         if (_springGroup == null)
             _springGroup = new GameObject("Springs").transform;
+        if (_bonusGroup == null)
+            _bonusGroup = new GameObject("Bonus").transform;
+
+
 
         _brickGroup.SetParent(transform);
         _groundGroup.SetParent(transform);
         _monkeyGroup.SetParent(transform);
         _bananaGroup.SetParent(transform);
         _springGroup.SetParent(transform);
+        _bonusGroup.SetParent(transform);
 
-        GameObject[] brickModels = Resources.LoadAll<GameObject>(PATH_BRICK);
-        GameObject[] groundModels = Resources.LoadAll<GameObject>(PATH_GROUND);
-        GameObject[] bananaModels = Resources.LoadAll<GameObject>(PATH_BANANA);
-        
-        for (int i = 0; i < groundModels.Length; ++i)
+
+        for (int i = 0; i < _groundModels.Length; ++i)
         {
-            Ground ground = groundModels[i].GetComponent<Ground>();
+            Ground ground = _groundModels[i].GetComponent<Ground>();
             _dicGroundModels.Add(ground.GetID(), ground);
         }
 
         //  =====================================
         //                브릭  재질별로 모음
         //  =====================================
-        for (int i = 0; i < brickModels.Length; ++i)
+        for (int i = 0; i < _brickModels.Length; ++i)
         {
-            Brick brick = brickModels[i].GetComponent<Brick>();
+            Brick brick = _brickModels[i].GetComponent<Brick>();
 
             if (brick == null) break;
             int texture = (int)brick.MyTexture;
@@ -163,6 +242,30 @@ public class MapTool : MonoBehaviour
 
             switch (item.Type)
             {
+                case TYPE_BONUS:
+                    position = PaserVec3(item.Position);
+                    rotation = Quaternion.Euler(PaserVec3(item.Rotation));
+                    scale = PaserVec3(item.Scale);
+
+                    if (GB.ObjectPooling.I.GetRemainingUses(_bonusModels[0].name) > 0)
+                    {
+                        oj = GB.ObjectPooling.I.Import(_bonusModels[0].name);
+                    }
+                    else
+                    {
+                        oj = Instantiate(_bonusModels[0], _bonusGroup); ;
+                        GB.ObjectPooling.I.Registration(_bonusModels[0].name, oj, true);
+                    }
+
+                    oj.transform.SetParent(_bonusGroup);
+
+                    oj.transform.position = position;
+                    oj.transform.rotation = rotation;
+                    oj.transform.localScale = scale;
+                    _gameObjectList.Add(oj);
+
+                    break;
+
                 case TYPE_BRICK:
                     ModelBrick mBrick = JsonUtility.FromJson<ModelBrick>(item.Json);
                     position = PaserVec3(item.Position);
@@ -264,26 +367,16 @@ public class MapTool : MonoBehaviour
 
                     ModelBanana  mBanana = JsonUtility.FromJson<ModelBanana>(item.Json);
 
-                    for (int j = 0; j < bananaModels.Length; ++j)
+                    for (int j = 0; j < _bananaModels.Length; ++j)
                     {
 
-                        if (mBanana.Type == bananaModels[j].GetComponent<Banana>().Type)
+                        if (mBanana.Type == _bananaModels[j].GetComponent<Banana>().Type)
                         {
+                            oj = Instantiate(_bananaModels[j]);
 
-                            
 
-                            if (GB.ObjectPooling.I.GetRemainingUses(bananaModels[j].name) > 0)
-                            {
-                                oj = GB.ObjectPooling.I.Import(bananaModels[j].name);
-                            }
-                            else
-                            {
-                                oj = Instantiate(bananaModels[j].gameObject);
-                                GB.ObjectPooling.I.Registration(bananaModels[j].gameObject.name, oj,true);
-                            }
                             Banana banana = oj.GetComponent<Banana>();
                             banana.SetModel(mBanana);
-                            oj.SetActive(true);
                             oj.transform.SetParent(_bananaGroup);
                             oj.transform.position = position;
                             oj.transform.rotation = rotation;
@@ -292,6 +385,7 @@ public class MapTool : MonoBehaviour
                             if (oj.GetComponent<Rigidbody2D>() != null)
                                 oj.GetComponent<Rigidbody2D>().isKinematic = true;
                             _gameObjectList.Add(oj);
+             
                             break;
                         }
                     }
@@ -301,17 +395,6 @@ public class MapTool : MonoBehaviour
                     position = PaserVec3(item.Position);
 
                     oj = loadPoolingObject(PATH_SHOOTER, "Shooter");
-                    //GameObject tmp = Resources.Load(PATH_SHOOTER) as GameObject;
-
-                    //if (GB.ObjectPooling.I.GetRemainingUses(tmp.name) > 0)
-                    //{
-                    //    oj = GB.ObjectPooling.I.Import(tmp.name);
-                    //}
-                    //else
-                    //{
-                    //    oj = Instantiate(tmp);
-                    //    GB.ObjectPooling.I.Registration(tmp.name, oj, true);
-                    //}
 
                     oj.transform.SetParent(transform);
                     oj.transform.position = position;
@@ -427,6 +510,10 @@ public class MapTool : MonoBehaviour
             Destroy(_springGroup.gameObject);
         if (_monkeyGroup != null)
             Destroy(_monkeyGroup.gameObject);
+        if (_bonusGroup != null)
+            Destroy(_bonusGroup.gameObject);
+
+
 
         _gameObjectList.Clear();
         _dicBrickModels.Clear();
@@ -448,56 +535,56 @@ public class MapTool : MonoBehaviour
     }
 
     int _tmpMapid = 1;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (_isLoading) return;
-            _tmpMapid++;
-            if (_tmpMapid > 550)
-                _tmpMapid = 550;
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.D))
+    //    {
+    //        if (_isLoading) return;
+    //        _tmpMapid++;
+    //        if (_tmpMapid > 550)
+    //            _tmpMapid = 550;
           
-            StartCoroutine(LoadMap(_tmpMapid,(result)=> { }));
-        }
+    //        StartCoroutine(LoadMap(_tmpMapid,(result)=> { }));
+    //    }
 
 
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (_isLoading) return;
-            _tmpMapid+= 10;
-            if (_tmpMapid > 550)
-                _tmpMapid = 550;
+    //    if (Input.GetKeyDown(KeyCode.W))
+    //    {
+    //        if (_isLoading) return;
+    //        _tmpMapid+= 10;
+    //        if (_tmpMapid > 550)
+    //            _tmpMapid = 550;
                 
             
-            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
-        }
+    //        StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
+    //    }
 
 
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (_isLoading) return;
-            _tmpMapid--;
-            if (_tmpMapid < 1)
-                _tmpMapid = 1;
+    //    if (Input.GetKeyDown(KeyCode.A))
+    //    {
+    //        if (_isLoading) return;
+    //        _tmpMapid--;
+    //        if (_tmpMapid < 1)
+    //            _tmpMapid = 1;
             
-            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
-        }
+    //        StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
+    //    }
 
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (_isLoading) return;
-            _tmpMapid-=10;
-            if (_tmpMapid < 1)
-                _tmpMapid = 1;
+    //    if (Input.GetKeyDown(KeyCode.S))
+    //    {
+    //        if (_isLoading) return;
+    //        _tmpMapid-=10;
+    //        if (_tmpMapid < 1)
+    //            _tmpMapid = 1;
                 
             
-            StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
+    //        StartCoroutine(LoadMap(_tmpMapid, (result) => { }));
 
-        }
+    //    }
 
-    }
+    //}
 
     #endif
 

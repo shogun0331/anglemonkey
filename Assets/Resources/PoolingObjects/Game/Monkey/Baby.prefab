@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5905451504270432731}
   m_Layer: 6
   m_Name: Baby
-  m_TagString: Untagged
+  m_TagString: Monkey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d25ad4bce4ef341a4850c12a03abf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  state: 9
   _spine: {fileID: 9093856290377312416}
   isLeft: 0
 --- !u!50 &5724503033748935072

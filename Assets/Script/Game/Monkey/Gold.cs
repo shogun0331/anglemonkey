@@ -6,7 +6,7 @@ public class Gold : Monkey
 {
 
     Rigidbody2D _rg = null;
-    GameObject[] _copyObjs;
+
 
     private void Awake()
     {
@@ -33,7 +33,6 @@ public class Gold : Monkey
     public override void Shoot(float power, Vector2 direction)
     {
         if (_rg == null) return;
-        _copyObjs = null;
         base.Shoot(power, direction);
     }
 
@@ -41,15 +40,6 @@ public class Gold : Monkey
     {
         base.UpdateShoot();
 
-        if (_copyObjs != null)
-        {
-            //점선을 위해 복사된 황금원숭이 그리기
-            for (int i = 0; i < _copyObjs.Length; ++i)
-            {
-                if(_copyObjs[i]  != null)
-                _copyObjs[i].GetComponent<Monkey>().UpdateShoot();
-            }
-        }
     }
 
     public override void Comback()
@@ -97,9 +87,6 @@ public class Gold : Monkey
         m1.GetComponent<Monkey>().Shoot(upRotatedDirection);
         m2.GetComponent<Monkey>().Shoot(downRotatedDirection);
 
-        _copyObjs = new GameObject[2];
-        _copyObjs[0] = m1;
-        _copyObjs[1] = m2;
 
 
         loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2).transform.position = transform.position;

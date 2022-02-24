@@ -89,9 +89,10 @@ public class Shooter : MonoBehaviour
         _leftBandLine.SetPosition(1, _leftBandLine.transform.position);
         _rightBandLine.SetPosition(1, _rightBandLine.transform.position);
 
+        
+         _bullet = null;
+        
 
-
-        _bullet = null;
         state = State.NotReady;
 
         clearGuideLine();

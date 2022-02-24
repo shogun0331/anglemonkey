@@ -20,11 +20,6 @@ public class CardControl : MonoBehaviour
     [SerializeField] RectTransform _back = null;
 
 
-    private void Awake()
-    {
-        Debug.Log(transform.position);
-    }
-
 
     public void Add(int index)
     {
@@ -41,11 +36,10 @@ public class CardControl : MonoBehaviour
 
     public void Delete(int index)
     {
-        //_cards[_targetIdx].Init();
-        //GB.ObjectPooling.I.Destroy(_cards[index].gameObject);
         _cards[_targetIdx].GetComponent<Rigidbody2D>().isKinematic = false;
         _cards[_targetIdx].GetComponent<Rigidbody2D>().AddForce(Vector2.up * 50000.0f + Vector2.left * 50000);
         _cards[_targetIdx].GetComponent<Rigidbody2D>().AddTorque(100.0f);
+        _cards[_targetIdx].PlayDestroy();
         _cards.RemoveAt(index);
          sorting(_sortRight);
     }
@@ -57,7 +51,6 @@ public class CardControl : MonoBehaviour
         {
                 _cards[i].Idle();
                 _cards[i].SetActiveButton(true);
- 
         }
     }
 

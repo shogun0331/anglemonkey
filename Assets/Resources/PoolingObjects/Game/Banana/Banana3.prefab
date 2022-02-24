@@ -132,7 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 2
   _hp: 0
-  _score: 100000
+  _score: 1000
 --- !u!114 &5937300964570604181
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 7437700392811963207}
   m_Layer: 6
   m_Name: Gorilla
-  m_TagString: Untagged
+  m_TagString: Monkey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c21654c57aca65240b69e3f02f7645a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  state: 9
   _spine: {fileID: 1849010782661259668}
   isLeft: 0
   _skillSpine: {fileID: 75330167998802144}

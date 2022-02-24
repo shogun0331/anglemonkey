@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 8214004568171776023}
   m_Layer: 6
   m_Name: Papio
-  m_TagString: Untagged
+  m_TagString: Monkey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb95b6a4b2462f419c02fb9cbd6a48b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  state: 9
   _spine: {fileID: 3162395574834772646}
   isLeft: 0
   _skill: {fileID: 8076665809354343977}

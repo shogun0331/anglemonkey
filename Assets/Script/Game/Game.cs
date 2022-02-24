@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Game : MonoBehaviour
 {
@@ -47,14 +48,32 @@ public class Game : MonoBehaviour
     private float _gameStartTime = 0.0f;
 
     private List<int> _monkeyList = new List<int>();
-
     private int _targetIndex = -1;
+
+    private int _resultTime;
+
+
+    private int[] _invenMonkeys = new int[5];
+
+
+    [Header("Map Level")]
+    [SerializeField] List<int> _easyList = new List<int>();
+    [SerializeField] List<int> _nomalList = new List<int>();
+    [SerializeField] List<int> _hardList = new List<int>();
+
 
     private void Awake()
     {
         InputManager.Instance.touchEvent += OnTouch;
     }
 
+    public void SetLevel(List<int> easy, List<int> nomal, List<int> hard)
+    {
+        _easyList = easy;
+        _nomalList = nomal;
+        _hardList = hard;
+
+    }
 
     public void SetTrailDotted(GameObject obj)
     {
@@ -66,7 +85,15 @@ public class Game : MonoBehaviour
     {
         _targetIndex = index;
     }
- 
+    private void Start()
+    {
+        //GameScore = 0;
+        //Load(0);
+
+        _gameUI.SetScore(GameScore);
+    }
+
+
 
     /// <summary>
     /// 보드가 준비되기 전까지는 파괴 되지 않음
@@ -77,13 +104,6 @@ public class Game : MonoBehaviour
         return _board.IsReady;
     }
 
-    private void Start()
-    {
-        GameScore = 0;
-        Load(0);
-        
-        _gameUI.SetScore(GameScore);
-    }
 
     public void AddScore(Vector2 position, int score)
     {
@@ -99,6 +119,7 @@ public class Game : MonoBehaviour
         return GameScore == Mathf.Abs(_subScore);
     }
 
+
     public void DestroyBanana()
     {
         
@@ -106,22 +127,79 @@ public class Game : MonoBehaviour
 
         if (_board.CompareBanana(_bananaDestroyCnt))
         {
+     
             //클리어 보너스 
-            AddScore(Vector3.zero, 1000000);
+            AddScore(Vector3.zero, Def.CLEAR_SCORE);
 
             _mapIndex++;
 
             if (_mapIndex < _mapIDList.Count)
             {
-
-
                 clearTrajectory();
 
                 _bananaDestroyCnt = 0;
                 StartCoroutine(loadDelayLoadMap(2.0f));
             }
+            else
+            {
+                UIManager.Instance.showPopup(Def.POPUP_RESULT);
+                ResultPopup result = UIManager.Instance.findScreen(Def.POPUP_RESULT).GetComponent<ResultPopup>();
+
+                System.TimeSpan span = new System.TimeSpan(0, 0, (int)GameTimer);
+
+                int timeScore = (int)GameTimer;
+                if (timeScore < 0) timeScore = 0;
+
+                AddScore(Vector2.zero, timeScore);
+                result.Init(span.ToString(@"mm\:ss"), GameScore);
+
+            }
         }
         
+    }
+
+    private void Update()
+    {
+        _gameUI.SetTimer((int)GameTimer);
+        
+
+    }
+
+    public void Load(int[] maps)
+    {
+
+        _mapIndex = 0;
+        _loading.Show();
+        _gameUI.SetStage(_mapIndex);
+        _bananaDestroyCnt = 0;
+
+        _mapIDList.Clear();
+        _mapIDList.Add(maps[0]);
+        _mapIDList.Add(maps[1]);
+        _mapIDList.Add(maps[2]);
+
+        for (int i = 0; i < _invenMonkeys.Length; ++i)
+            _invenMonkeys[i] = 6;
+
+
+
+
+
+        _gameStartTime = Time.time;
+
+
+
+        _gameUI.SetTimer((int)GameTimer);
+        _board.Init(_mapIDList.ToArray(),
+        () =>
+        {
+            _loading.CloseLoading(0.5f);
+            StartCoroutine(startAction());
+        });
+
+
+
+
     }
 
     public void Load(int randomSeed)
@@ -130,10 +208,9 @@ public class Game : MonoBehaviour
         _mapIndex = 0;
         _loading.Show();
         _gameUI.SetStage(_mapIndex);
+        
         //Map Seed
-        Random.InitState(randomSeed);
-
-
+        UnityEngine.Random.InitState(randomSeed);
 
         //_mapIDList.Add(350);
         //_mapIDList.Add(Random.Range(100, 200));
@@ -150,6 +227,7 @@ public class Game : MonoBehaviour
             ()=> 
             {
                 _loading.CloseLoading(0.5f);
+
                 StartCoroutine(startAction());
             });
     }
@@ -167,6 +245,8 @@ public class Game : MonoBehaviour
                {
                    _loading.CloseLoading(0.5f);
                    _gameUI.SetStage(_mapIndex);
+
+
                    StartCoroutine(startAction());
                });
         
@@ -175,6 +255,7 @@ public class Game : MonoBehaviour
 
     IEnumerator startAction()
     {
+
         
         yield return new WaitForEndOfFrame();
         //카메라 위치 사이즈 세팅
@@ -183,29 +264,40 @@ public class Game : MonoBehaviour
 
         //게임시작 액션
         _board.PlayAction();
-        _gameStartTime = Time.time;
+        
 
         yield return new WaitForSeconds(1.0f);
 
-        _monkeyList = _board.GetMonkeyList();
+        List<int> list = _board.GetMonkeyList(_mapIndex);
+        
 
-        for (int i = 0; i < _monkeyList.Count; ++i)
+        for (int i = 0; i < list.Count; ++i)
         {
-            _gameUI.AddMonkey(_monkeyList[i]);
+            AddMonkey(list[i]);
             yield return new WaitForSeconds(0.2f);
         }
 
         yield return new WaitForSeconds(0.2f);
-
+        if(_targetIndex <0)
         ChoiseCard(0);
+    }
+
+    public void AddMonkey(int monkeyID)
+    {
+        //_monkeyList.Add(monkeyID);
+        //_gameUI.AddMonkey(monkeyID);
+
 
 
     }
 
 
+
+
     public void ShootReady()
     {
-        ChoiseCard(0);
+        if(_board.GetBullet() == null)
+            ChoiseCard(0);
     }
     public void ChoiseCard(int index)
     {
@@ -242,6 +334,7 @@ public class Game : MonoBehaviour
 
     }
 
+
     private void clearTrajectory()
     {
 
@@ -274,7 +367,10 @@ public class Game : MonoBehaviour
 
                 if (_board.Shoot())
                 {
-                    _gameUI.DeleteMonkey(_targetIndex);
+
+                    //_gameUI.DeleteMonkey(_targetIndex);
+                    //_board.UseMonkey(_mapIndex, _targetIndex);
+                    UseMonkey(_targetIndex);
                     _targetIndex = -1;
                     clearTrajectory();
                 }
@@ -282,6 +378,26 @@ public class Game : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void ResetScene()
+    {
+        InputManager.Instance.touchEvent -= OnTouch;
+        UIManager.Instance.changeScene("Game");
+    }
+
+    public void UseMonkey(int index)
+    {
+        
+        _invenMonkeys[index]--;
+        
+
+
+        _gameUI.UseMonkeyText(index, _invenMonkeys[index]);
+
+        if (_invenMonkeys[index] <= 0)
+            _gameUI.ActiveMonkey(index, false);
+        
     }
 
 

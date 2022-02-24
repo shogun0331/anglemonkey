@@ -31,6 +31,8 @@ public class Macaca : Monkey
     }
     protected override void ShootEnd()
     {
+        _trail.time = 0.0f;
+ 
         base.ShootEnd();
     }
     public override void Shoot(float power, Vector2 direction)
@@ -50,7 +52,6 @@ public class Macaca : Monkey
     {
         _rg.isKinematic = false;
         base.Comback();
-
     }
 
 
@@ -70,7 +71,8 @@ public class Macaca : Monkey
         _skill.gameObject.SetActive(true);
         _skill.Play("skill");
         _trail.enabled = true;
-        
+        _trail.time = 0.1f;
+
     }
 
     public override void UpdateWind(float power, Vector2 direction)
@@ -83,36 +85,6 @@ public class Macaca : Monkey
     {
         base.OnCollisionEnter2D(coll);
         _skill.gameObject.SetActive(false);
-    }
-
-
-    private GameObject loadPoolingObject(string path, string key)
-    {
-        GameObject oj = null;
-        if (GB.ObjectPooling.I.GetRemainingUses(key) > 0)
-        {
-            oj = GB.ObjectPooling.I.Import(key);
-        }
-        else
-        {
-            GameObject resources = null;
-
-            if (GB.ObjectPooling.I.CheckModel(key))
-            {
-                resources = GB.ObjectPooling.I.GetModel(key);
-                oj = Instantiate(resources);
-            }
-            else
-            {
-                resources = Resources.Load<GameObject>(path);
-                GB.ObjectPooling.I.RegistModel(key, resources);
-                oj = Instantiate(resources);
-            }
-
-            GB.ObjectPooling.I.Registration(key, oj, true);
-        }
-
-        return oj;
     }
 
 }

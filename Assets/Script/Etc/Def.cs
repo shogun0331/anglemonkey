@@ -5,6 +5,7 @@ public class Def
     public enum Monkey { Baby = 0,Gold, Papio, Macaca, Lemur, Nasalis, Hylobatidae, Gorilla }
 
 
+    public const int CLEAR_SCORE = 10000;
     public const string SCENE_GAME = "Game";
 
 
@@ -25,6 +26,8 @@ public class Def
     public const string PATH_MONKEY_NASALIS = "PoolingObjects/Game/Monkey/Nasalis";
     public const string PATH_MONKEY_HYLOBATIDAE = "PoolingObjects/Game/Monkey/Hylobatidae";
     public const string PATH_MONKEY_GORILLA = "PoolingObjects/Game/Monkey/Gorilla";
+
+    public const string PATH_OBJECT_ROCK = "PoolingObjects/Game/Skill/Ston";
 
     public const string PATH_DOT_BLUE = "PoolingObjects/Game/Dotted/Dot_Blue";
     public const string PATH_DOT_PURPLE = "PoolingObjects/Game/Dotted/Dot_Purple";
@@ -54,6 +57,10 @@ public class Def
     public const string MONKEY_HYLOBATIDAE = "Hylobatidae";
     public const string MONKEY_GORILLA = "Gorilla";
 
+    public const string OBJECT_ROCK = "Ston";
+
     public const string CARD = "Card";
     public const int TIMER = 180;
+
+    public const string POPUP_RESULT = "ResultPopup";
 }

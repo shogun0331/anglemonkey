@@ -9,8 +9,8 @@ public class Monkey : MonoBehaviour
     private float _gravityScale;
     private float _angularDrag;
 
-    public enum State { Idle, Ready, Shoot, ShootEnd, Bump, ComBack, Skill };
-    public State state = State.Idle;
+    public enum State { Idle, Ready, Shoot, ShootEnd, Bump, ComBack, Skill ,SkillShoot, SkillBump,End};
+    public State state = State.End;
     [SerializeField] SpineRemote _spine = null;
     public bool isLeft = false;
 
@@ -23,12 +23,16 @@ public class Monkey : MonoBehaviour
     const string ANIM_BUMP = "wing_02";
     const string ANIM_COMBACK = "escape";
 
+    const string ANIM_SKILL_SHOOT = "wing_01_02";
+    const string ANIM_SKILL_BUMP = "wing_02_02";
+
     public const string ANIM_SKILL = "skill";
 
     public bool IsGoHome { get { return _isGoHome; } }
     private bool _isGoHome = false;
 
     bool _isInit = false;
+    protected bool isDrawDotted = true;
     private void Start()
     {
 
@@ -62,8 +66,9 @@ public class Monkey : MonoBehaviour
     }
 
 
-    protected void changeState(State state,bool isAddAnim = false)
+    protected void changeState(State state, float delay = 0.0f)
     {
+        if (this.state == state) return;
 
         this.state = state;
         if (_spine == null) return;
@@ -71,37 +76,48 @@ public class Monkey : MonoBehaviour
         switch (state)
         {
             case State.Idle:
-                    if (Random.value < 0.5f) _spine.Play(ANIM_IDLE_1, true);
-                    else _spine.Play(ANIM_IDLE_2, false);
-                
+                if (Random.value < 0.5f) _spine.Play(ANIM_IDLE_1);
+                else _spine.Play(ANIM_IDLE_2);
                 break;
 
             case State.Ready:
-                _spine.Play(ANIM_READY, true);
+                _spine.Play(ANIM_READY);
                 break;
 
             case State.Shoot:
-
-                _spine.Play(ANIM_SHOOT, true);
+                _spine.Play(ANIM_SHOOT);
                 break;
 
             case State.ComBack:
-                _spine.Play(ANIM_COMBACK, false);
+                _spine.Play(ANIM_COMBACK);
                 break;
 
             case State.ShootEnd:
-                if (!isAddAnim)
-                    _spine.Play(ANIM_BUMP, false);
-                else
-                    _spine.AddPlay(ANIM_BUMP);
-                
-                    
+                _spine.Play(ANIM_BUMP);
                 break;
 
             case State.Skill:
-                _spine.Play(ANIM_SKILL, false);
+                _spine.Play(ANIM_SKILL);
                 break;
+            case State.Bump:
+                _spine.Play(ANIM_BUMP);
+                break;
+            case State.SkillBump:
+                _spine.Play(ANIM_SKILL_BUMP);
+                break;
+
+            case State.SkillShoot:
+                _spine.Play(ANIM_SKILL_SHOOT);
+                break;
+                
         }
+    }
+
+    IEnumerator playAnimation(string animationName,float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+
     }
 
     protected virtual void ShootEnd()
@@ -139,6 +155,7 @@ public class Monkey : MonoBehaviour
         rg.gravityScale = 1.0f;
         rg.isKinematic = false;
         rg.velocity = velocity;
+        isDrawDotted = true;
 
     }
 
@@ -256,8 +273,8 @@ public class Monkey : MonoBehaviour
                 GetComponent<Rigidbody2D>().isKinematic = true;
                 GetComponent<Rigidbody2D>().gravityScale = _gravityScale;
 
-                Destroy(gameObject);
-                //GB.ObjectPooling.I.Destroy(gameObject);
+      
+                GB.ObjectPooling.I.Destroy(gameObject);
                 
                 yield break;
             }
@@ -268,24 +285,28 @@ public class Monkey : MonoBehaviour
 
     public virtual void UpdateShoot()
     {
-
         if (state == State.Shoot || state == State.Skill)
         {
-            _trajectoryTime += Time.deltaTime;
-
-            if (_trajectoryTime > 0.1f)
+            if (isDrawDotted)
             {
-                GameObject oj = loadPoolingObject(Def.PATH_DOT_YELLOW, Def.DOTTED_YELLOW);
-                oj.transform.position = transform.position;
-                oj.transform.SetParent(null);
-                oj.transform.localScale = new Vector2(0.5f, 0.5f);
-                Game.I.SetTrailDotted(oj);
-                _trajectoryTime = 0.0f;
+                _trajectoryTime += Time.deltaTime;
 
+                if (_trajectoryTime > 0.1f)
+                {
+                    GameObject oj = loadPoolingObject(Def.PATH_DOT_YELLOW, Def.DOTTED_YELLOW);
+                    oj.transform.position = transform.position;
+                    oj.transform.SetParent(null);
+                    oj.transform.localScale = new Vector2(0.5f, 0.5f);
+                    Game.I.SetTrailDotted(oj);
+                    _trajectoryTime = 0.0f;
+
+                }
             }
 
-            Rigidbody2D rg = GetComponent<Rigidbody2D>();
-            transform.right = rg.velocity;
+                Rigidbody2D rg = GetComponent<Rigidbody2D>();
+                transform.right = rg.velocity;
+
+            
 
 
             if (transform.position.y < -10.0f)

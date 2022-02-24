@@ -8,6 +8,8 @@ public class Papio : Monkey
     
     [SerializeField] SpineRemote _skill = null;
 
+    float _fSkillTime = 0.0f;
+
     private void Awake()
     {
         _rg = GetComponent<Rigidbody2D>();
@@ -22,8 +24,27 @@ public class Papio : Monkey
     }
     protected override void ShootEnd()
     {
-        base.ShootEnd();
+        isDrawDotted = false;
+        const float DELAY = 1.0f;
+
+        if (isUseSkill && DELAY > Time.time - _fSkillTime)
+        {
+            float gap = Time.time - _fSkillTime;
+           StartCoroutine( playShootEndDelay(gap));
+        }
+        else
+        {
+            base.ShootEnd();
+        }
+
     }
+
+    IEnumerator playShootEndDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ShootEnd();
+    }
+
     public override void Ready()
     {
         isUseSkill = false;
@@ -57,6 +78,19 @@ public class Papio : Monkey
         if (isUseSkill) return;
         base.Skill();
         isUseSkill = true;
+        _fSkillTime = Time.time;
+        StartCoroutine(playSkill());
+    
+        
+    }
+    
+
+    IEnumerator playSkill()
+    {
+        const float DELAY = 0.3f;
+        yield return new WaitForSeconds(DELAY);
+
+
         _skill.gameObject.SetActive(true);
         _skill.Play("ef_01");
 
@@ -68,7 +102,7 @@ public class Papio : Monkey
 
         //범위내에 아무것도 없다면 리턴
         if (colls.Length == 0)
-            return;
+            yield  return null;
         Vector3 nowAngle = transform.rotation.eulerAngles;
 
         float min, max;
@@ -119,7 +153,7 @@ public class Papio : Monkey
                     colls[i].GetComponent<Rigidbody2D>().velocity += (vec2 * power) * (1 / colls[i].GetComponent<Rigidbody2D>().mass) * (1 / mag);
 
                     if (colls[i].GetComponent<Brick>() != null)
-                        colls[i].GetComponent<Brick>().SetDamage( power);
+                        colls[i].GetComponent<Brick>().SetDamage(power);
                 }
             }
             else
@@ -143,18 +177,18 @@ public class Papio : Monkey
                     colls[i].GetComponent<Rigidbody2D>().velocity += (vec2 * power) * (1 / colls[i].GetComponent<Rigidbody2D>().mass) * (1 / mag);
 
                     if (colls[i].GetComponent<Brick>() != null)
+                    {
                         colls[i].GetComponent<Brick>().SetDamage(power);
+                        GameObject oj = loadPoolingObject(Def.PATH_EFFECT_HIT, Def.EFFECT_HIT);
+                        oj.transform.position = colls[i].transform.position;
+                    }
                 }
             }
         }
 
-
-
-
-
-
-
     }
+
+
 
     public override void UpdateWind(float power, Vector2 direction)
     {

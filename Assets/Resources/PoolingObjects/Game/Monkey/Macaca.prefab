@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1641971890047776728}
   m_Layer: 6
   m_Name: Macaca
-  m_TagString: Untagged
+  m_TagString: Monkey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e8f41b5e525704ebe516232b369acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  state: 9
   _spine: {fileID: 2215421510998064896}
   isLeft: 0
   _skill: {fileID: 4993296712582595471}
@@ -420,7 +420,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 1
+  m_Time: 0.1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

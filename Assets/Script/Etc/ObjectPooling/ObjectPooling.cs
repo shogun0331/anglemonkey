@@ -136,7 +136,7 @@ namespace GB
                 Debug.LogWarning("ObjectPooling - Not Registration Object - " + obj.name);
                 return;
             }
-
+            obj.GetComponent<MonoBehaviour>().StopAllCoroutines();
             obj.transform.SetParent(transform);
             obj.SetActive(false);
 

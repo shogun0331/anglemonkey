@@ -6,7 +6,7 @@ public class Lemur : Monkey
 {
     Rigidbody2D _rg = null;
 
-
+    float _fSkillTime = 0.0f;
     private void Awake()
     {
         _rg = GetComponent<Rigidbody2D>();
@@ -15,10 +15,26 @@ public class Lemur : Monkey
     }
     protected override void ShootEnd()
     {
-        changeState(State.Bump, true);
-        //AddAnimationPlay("wing_02");
-        //base.ShootEnd();
+        isDrawDotted = false;
+        const float DELAY = 0.6f;
+
+        if (isUseSkill && DELAY > Time.time - _fSkillTime)
+        {
+            float gap = Time.time - _fSkillTime;
+            StartCoroutine(playShootEndDelay(gap));
+        }
+        else
+        {
+            base.ShootEnd();
+        }
     }
+
+    IEnumerator playShootEndDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ShootEnd();
+    }
+
     public override void Idle()
     {
         _rg.isKinematic = true;
@@ -56,10 +72,21 @@ public class Lemur : Monkey
         if (state != State.Shoot) return;
         if (isUseSkill) return;
         base.Skill();
-
+        _fSkillTime = Time.time;
         isUseSkill = true;
+        StartCoroutine(playSkill());
 
-        float circleSize = 2f;
+      
+     }
+
+
+    IEnumerator playSkill()
+    {
+        const float DELAY = 0.3f;
+        yield return new WaitForSeconds(DELAY);
+
+
+        float circleSize = 1.5f;
         float power = 2.2f;
 
         //범위 내에 있는 충돌체 모두 호출
@@ -71,10 +98,14 @@ public class Lemur : Monkey
             {
                 loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2).transform.position = colls[i].transform.position;
                 colls[i].GetComponent<Brick>().SetDamage(power);
+
+                GameObject oj = loadPoolingObject(Def.PATH_EFFECT_HIT, Def.EFFECT_HIT);
+                oj.transform.position = colls[i].transform.position;
             }
         }
-      
-     }
+
+    }
+
 
 
     public override void UpdateWind(float power, Vector2 direction)
