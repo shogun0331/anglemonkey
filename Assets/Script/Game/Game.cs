@@ -90,7 +90,8 @@ public class Game : MonoBehaviour
     /// <param name="seed">랜덤 시드</param>
     public void Shuffle(LEAGUE type, int seed)
     {
-        
+        _isGameOver = false;
+
         //시드 초기화
         Random.InitState(seed);
 

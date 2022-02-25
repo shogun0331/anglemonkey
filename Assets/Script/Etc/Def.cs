@@ -5,7 +5,7 @@ public class Def
     public enum Monkey { Baby = 0,Gold, Papio, Macaca, Lemur, Nasalis, Hylobatidae, Gorilla }
 
 
-    public const int CLEAR_SCORE = 10000;
+    public const int CLEAR_SCORE = 2000;
     public const string SCENE_GAME = "Game";
 
 
