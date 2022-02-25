@@ -239,12 +239,15 @@ public class Monkey : MonoBehaviour
     IEnumerator goHome(bool isRight)
     {
         float time = 0.0f;
-        GetComponent<CircleCollider2D>().isTrigger = true;
+        GetComponent<CircleCollider2D>().enabled = false;
         GetComponent<Rigidbody2D>().gravityScale = 7.0f;
         if(isRight)
              GetComponent<Rigidbody2D>().AddForce(new Vector2(10, 500));
         else
             GetComponent<Rigidbody2D>().AddForce(new Vector2(-10, 500));
+
+
+        
         changeState(State.ComBack);
         while (true)
         {
@@ -267,7 +270,8 @@ public class Monkey : MonoBehaviour
             if (time > 3.0f)
             {
                 transform.localScale = Vector3.one;
-           
+                GetComponent<CircleCollider2D>().enabled = true;
+
                 GetComponent<CircleCollider2D>().isTrigger = false;
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 GetComponent<Rigidbody2D>().isKinematic = true;

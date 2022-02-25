@@ -63,6 +63,7 @@ public class MapTool : MonoBehaviour
 
     public void PaserMapLevel()
     {
+
         string[] spritLine = _mapLevel.text.Split('\n');
 
         List<int> easy = new List<int>();
@@ -106,7 +107,7 @@ public class MapTool : MonoBehaviour
             }
         }
 
-        Game.I.SetLevel(easy, nomal, hard);
+        Game.I.SetLevel(easy.ToArray(), nomal.ToArray(), hard.ToArray());
 
 
     }

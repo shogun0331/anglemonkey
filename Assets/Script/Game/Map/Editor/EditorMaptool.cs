@@ -15,16 +15,12 @@ public class EditorMaptool : Editor
         {
             map.LoadResources();
         }
-
-
+        
         if (GUILayout.Button("Load MapLevel "))
         {
             map.PaserMapLevel();
         }
-
-
-
-
+        
 
     }
 

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+
 
 public class Game : MonoBehaviour
 {
@@ -52,28 +52,115 @@ public class Game : MonoBehaviour
 
     private int _resultTime;
 
-
     private int[] _invenMonkeys = new int[5];
 
-
     [Header("Map Level")]
-    [SerializeField] List<int> _easyList = new List<int>();
-    [SerializeField] List<int> _nomalList = new List<int>();
-    [SerializeField] List<int> _hardList = new List<int>();
+    [SerializeField] int[] _easy;
+    [SerializeField] int[] _nomal;
+    [SerializeField] int[] _hard;
 
+
+    public enum LEAGUE
+    {
+        CASH_1 = 0,
+        CASH_2,
+        CASH_3,
+        Z1,
+        Z6,
+        Z30,
+        Z60
+    }
 
     private void Awake()
     {
         InputManager.Instance.touchEvent += OnTouch;
     }
 
-    public void SetLevel(List<int> easy, List<int> nomal, List<int> hard)
+    public void SetLevel(int[] easy, int[] nomal, int[] hard)
     {
-        _easyList = easy;
-        _nomalList = nomal;
-        _hardList = hard;
+        _easy = easy;
+        _nomal = nomal;
+        _hard = hard;
+    }
+
+    /// <summary>
+    /// 리그별 맵 선정
+    /// </summary>
+    /// <param name="type">리그 타입</param>
+    /// <param name="seed">랜덤 시드</param>
+    public void Shuffle(LEAGUE type, int seed)
+    {
+        
+        //시드 초기화
+        Random.InitState(seed);
+
+        int[] easy = _easy;
+        int[] nomal = _nomal;
+        int[] hard = _hard;
+
+        Etc.ShuffleArray(easy);
+        Etc.ShuffleArray(nomal);
+        Etc.ShuffleArray(hard);
+
+        int[] mapIds = new int[3];
+
+        switch (type)
+        {
+            case LEAGUE.CASH_1:
+                // e - e - n
+                mapIds[0] = easy[0];
+                mapIds[1] = easy[1];
+                mapIds[2] = nomal[2];
+                break;
+
+            case LEAGUE.CASH_2:
+                //e - n - n
+                mapIds[0] = easy[0];
+                mapIds[1] = nomal[1];
+                mapIds[2] = nomal[2];
+                break;
+
+            case LEAGUE.CASH_3:
+                //n - n - n
+                mapIds[0] = nomal[0];
+                mapIds[1] = nomal[1];
+                mapIds[2] = nomal[2];
+                break;
+
+            case LEAGUE.Z1:
+                //e - e - e
+                mapIds[0] = easy[0];
+                mapIds[1] = easy[1];
+                mapIds[2] = easy[2];
+                break;
+
+            case LEAGUE.Z6:
+                //e - e - n
+                mapIds[0] = easy[0];
+                mapIds[1] = easy[1];
+                mapIds[2] = nomal[2];
+                break;
+
+            case LEAGUE.Z30:
+                //n -  e  - h
+                mapIds[0] = nomal[0];
+                mapIds[1] = easy[1];
+                mapIds[2] = hard[2];
+                break;
+
+            case LEAGUE.Z60:
+                //n - h - h
+                mapIds[0] = nomal[0];
+                mapIds[1] = hard[1];
+                mapIds[2] = hard[2];
+                break;
+        }
+
+        Load(mapIds);
 
     }
+
+
 
     public void SetTrailDotted(GameObject obj)
     {
@@ -158,9 +245,20 @@ public class Game : MonoBehaviour
         
     }
 
+    bool _isGameOver = false;
+
     private void Update()
     {
+        if(!_isGameOver)
         _gameUI.SetTimer((int)GameTimer);
+
+        if (!_isGameOver)
+        {
+             if(GameTimer < 0.0f)
+            _isGameOver = true;
+
+        }
+
         
 
     }
@@ -360,10 +458,11 @@ public class Game : MonoBehaviour
 
             case TouchPhase.Moved:
                 _board.SetAiming(touchPosition);
+                _board.MonkeySkill();
                 break;
 
             case TouchPhase.Ended:
-                _board.MonkeySkill();
+           
 
                 if (_board.Shoot())
                 {
