@@ -25,7 +25,6 @@ public class Brick : MonoBehaviour
 
     Vector2 _orijinScale;
 
-
     private CircleCollider2D _cCollider = null;
     private PolygonCollider2D _pCollider = null;
     private BoxCollider2D _bCollider = null;

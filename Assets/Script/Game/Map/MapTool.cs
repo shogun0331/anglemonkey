@@ -523,6 +523,19 @@ public class MapTool : MonoBehaviour
 
 #if UNITY_EDITOR
 
+
+    
+    void OnDrawGizmosSelected()
+    {
+      
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, new Vector2(LeftX,transform.position.y));
+
+            Gizmos.DrawLine(transform.position, new Vector2(RightX, transform.position.y));
+
+    }
+
+
     private void OnGUI()
     {
         int w = Screen.width, h = Screen.height;

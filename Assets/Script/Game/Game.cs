@@ -280,13 +280,7 @@ public class Game : MonoBehaviour
         for (int i = 0; i < _invenMonkeys.Length; ++i)
             _invenMonkeys[i] = 6;
 
-
-
-
-
         _gameStartTime = Time.time;
-
-
 
         _gameUI.SetTimer((int)GameTimer);
         _board.Init(_mapIDList.ToArray(),
@@ -332,7 +326,15 @@ public class Game : MonoBehaviour
     }
 
 
-    IEnumerator loadDelayLoadMap(float delay)
+    public void SetResolution()
+    {
+        Debug.Log("width : " + Screen.width);
+        Debug.Log("height : " + Screen.height);
+    }
+
+
+
+IEnumerator loadDelayLoadMap(float delay)
     {
 
         yield return new WaitForSeconds(delay);
@@ -352,6 +354,9 @@ public class Game : MonoBehaviour
     }
     
 
+
+
+
     IEnumerator startAction()
     {
 
@@ -359,6 +364,9 @@ public class Game : MonoBehaviour
         yield return new WaitForEndOfFrame();
         //카메라 위치 사이즈 세팅
         _board.SetCam();
+        //SetResolution();
+        //SetResolution();
+
         yield return new WaitForSeconds(1.0f);
 
         //게임시작 액션
@@ -385,8 +393,6 @@ public class Game : MonoBehaviour
     {
         //_monkeyList.Add(monkeyID);
         //_gameUI.AddMonkey(monkeyID);
-
-
 
     }
 

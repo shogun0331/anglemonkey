@@ -42,7 +42,9 @@ public class Ground : MonoBehaviour
     public Vector2 GetRightPoint()
     {
         Vector2 point = Vector2.zero;
-         point.x = transform.position.x + (_sprSize.x * 0.5f)  * transform.localScale.x;
+        point.x = transform.position.x + (_sprSize.x * 0.5f)  * transform.localScale.x;
+
+        point.y = transform.position.y - (_sprSize.y * 0.5f) * transform.localScale.x;
         return point;
     }
 
@@ -52,6 +54,8 @@ public class Ground : MonoBehaviour
 
         Vector2 point = Vector2.zero;
         point.x = transform.position.x - (_sprSize.x * 0.5f) * transform.localScale.x;
+        point.y = transform.position.y + (_sprSize.y * 0.5f) * transform.localScale.x;
+
         return point;
     }
 
