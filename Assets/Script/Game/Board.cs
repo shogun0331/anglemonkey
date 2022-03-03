@@ -22,6 +22,8 @@ public class Board : MonoBehaviour
 
     List<int>[] _monkeyLists = new List<int>[3];
 
+    bool _firstShoot = false;
+
     public bool CompareBanana(int cnt)
     {
         return cnt >= _bananaList.Count;
@@ -32,6 +34,7 @@ public class Board : MonoBehaviour
         return _monkeyLists[mapIndex];
     }
 
+    
     public void UseMonkey(int mapIndex,int index)
     {
         //if (_monkeyLists.Length <= mapIndex) return;
@@ -58,8 +61,8 @@ public class Board : MonoBehaviour
         _monkeyLists = new List<int>[3];
 
         BoardState = State.LoadMap;
-   
 
+        _firstShoot = false;
         //3개의맵 로드  - 오브젝트 준비 - 최초 맵 재 로드  
         _mapTool.Load(mapIds[2], (result1) =>
          {
@@ -132,7 +135,7 @@ public class Board : MonoBehaviour
             if(_shooter.Bullet != null)
             GB.ObjectPooling.I.Destroy(_shooter.Bullet);
         }
-
+        _firstShoot = false;
         _mapTool.Load(mapId, (result) =>
         {
             _brickList.Clear();
@@ -215,7 +218,7 @@ public class Board : MonoBehaviour
             {
                 if (brickIdx >= _brickList.Count)
                 {
-                    ReadyBrick();
+                    //ReadyBrick();
                     yield return new WaitForSeconds(1.0f);
                    
                     _isReady = true;
@@ -448,7 +451,15 @@ public class Board : MonoBehaviour
         if (!_isReady) return false;
         if (_shooter.state != Shooter.State.Aim) return false;
 
-        
+        if (!_firstShoot)
+        {
+            _firstShoot = true;
+
+            ReadyBrick();
+        }
+
+
+
         _shooter.Shoot();
 
 

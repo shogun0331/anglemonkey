@@ -4,53 +4,62 @@ using UnityEngine;
 
 public class CameraResolution : MonoBehaviour
 {
-    //const float SIZE_X = 2.055f;
-    //const float SIZE_Y = 1.0f;
 
-
-
-    private void Awake()
+    private void CheckMapScale(float mapWidth)
     {
 
-        
+        mapWidth = 19.2f;
+        Camera cam = Camera.main;
+        var topRight = (Vector2)cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane));
+        var topLeft = (Vector2)cam.ScreenToWorldPoint(new Vector3(0, cam.pixelHeight, cam.nearClipPlane));
+
+        float camWidth = Mathf.Abs(topLeft.x) + Mathf.Abs(topRight.x);
+
+        float div = mapWidth / camWidth;
+        float tmp = div - 1;
+        float sz = cam.orthographicSize;
+        cam.orthographicSize = sz + (sz * tmp);
+
     }
 
-
-    public void SetSize(Vector2 size)
+    private void Update()
     {
-
-        float screenX = Screen.width / Screen.height;
-        //9.6
-        float x = size.x / screenX;
-
-        Camera.main.orthographicSize = x;
-
-        //4.97 
+        //if (_screenWidth == Screen.width && _screenHeight == Screen.height) return;
+        CheckMapScale(0);
     }
-
-
-
-    //public Vector2 GetSize()
-    //{
-
-
-    //    Camera cam = GetComponent<Camera>();
-    //    float x = cam.orthographicSize * SIZE_X;
-    //    float y = cam.orthographicSize * SIZE_Y;
-
-    //    return new Vector2(x, y);
-
-    //}
 
 
 #if UNITY_EDITOR
 
-
-
     void OnDrawGizmosSelected()
     {
 
+        Camera cam = Camera.main;
+
+        var bottomLeft = (Vector2)cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane));
+        var topLeft = (Vector2)cam.ScreenToWorldPoint(new Vector3(0, cam.pixelHeight, cam.nearClipPlane));
+        var topRight = (Vector2)cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane));
+        var bottomRight = (Vector2)cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, 0, cam.nearClipPlane));
+
+
         Gizmos.color = Color.blue;
+        //RU
+        Vector2 position = topRight;
+        Gizmos.DrawSphere(position, 0.5f);
+
+        //RD
+        position = bottomRight;
+        Gizmos.DrawSphere(position, 0.5f);
+
+        //LU
+        position = topLeft;
+        Gizmos.DrawSphere(position, 0.5f);
+
+
+        //LU
+        position = bottomLeft;
+        Gizmos.DrawSphere(position, 0.5f);
+
         //Gizmos.DrawLine(transform.position, new Vector2(LeftX, transform.position.y));
 
         //Gizmos.DrawLine(transform.position, new Vector2(RightX, transform.position.y));

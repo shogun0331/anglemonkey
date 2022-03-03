@@ -54,6 +54,10 @@ public class Game : MonoBehaviour
 
     private int[] _invenMonkeys = new int[5];
 
+
+
+
+
     [Header("Map Level")]
     [SerializeField] int[] _easy;
     [SerializeField] int[] _nomal;
@@ -74,6 +78,8 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         InputManager.Instance.touchEvent += OnTouch;
+
+        
     }
 
     public void SetLevel(int[] easy, int[] nomal, int[] hard)
@@ -210,7 +216,6 @@ public class Game : MonoBehaviour
 
     public void DestroyBanana()
     {
-        
         _bananaDestroyCnt++;
 
         if (_board.CompareBanana(_bananaDestroyCnt))

@@ -4,8 +4,14 @@ public class Def
 
     public enum Monkey { Baby = 0,Gold, Papio, Macaca, Lemur, Nasalis, Hylobatidae, Gorilla }
 
-
     public const int CLEAR_SCORE = 2000;
+
+    
+    public const string SCENE_AGREE = "Agree";
+    public const string SCENE_GDPR = "Gdpr";
+
+    public const string SCENE_MAIN = "Main";
+    public const string SCENE_LOADING = "Loading";
     public const string SCENE_GAME = "Game";
 
 
@@ -62,5 +68,7 @@ public class Def
     public const string CARD = "Card";
     public const int TIMER = 180;
 
+    public const string POPP_SCORETUTORIAL = "ScoreTutorialPopup";
     public const string POPUP_RESULT = "ResultPopup";
+    public const string POPUP_HOWTOPLAY = "HowToPlayPopup";
 }
