@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 897733e1788c54560be06338e5600818, type: 3}
   m_Name: skillz-settings
   m_EditorClassIdentifier: 
-  GameID: 0
+  GameID: 20067
   Environment: 0
   Orientation: 0
   MatchParameters:

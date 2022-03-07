@@ -322,6 +322,9 @@ public class Monkey : MonoBehaviour
 
     public virtual void OnCollisionEnter2D(Collision2D coll)
     {
+
+        SoundManager.Instance.Play(SoundManager.SOUND_TRACK.COLLISION);
+
         GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2);
         oj.transform.position = coll.contacts[0].point;
 

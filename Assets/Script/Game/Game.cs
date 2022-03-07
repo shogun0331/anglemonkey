@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
     private static Game _i = null;
     [SerializeField] Board _board = null;
 
-    // ¸Ê¿¡ µû¸¥ ¿ø¼þÀÌ °¹¼ö 
+    // ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     private List<int> _invenMoney = new List<int>();
     private List<int> _mapIDList = new List<int>();
 
@@ -75,11 +75,24 @@ public class Game : MonoBehaviour
         Z60
     }
 
+    public enum SCORE_TYPE
+    {
+        BANANA = 0,
+        TOKKEN,
+        DESTROY,
+        MONKEY,
+        TIME,
+        ClEAR
+    }
+
+    Dictionary<SCORE_TYPE, int> _dicScore = new Dictionary<SCORE_TYPE, int>();
+
     private void Awake()
     {
+        _dicScore.Clear();
         InputManager.Instance.touchEvent += OnTouch;
 
-        
+
     }
 
     public void SetLevel(int[] easy, int[] nomal, int[] hard)
@@ -90,15 +103,15 @@ public class Game : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸®±×º° ¸Ê ¼±Á¤
+    /// ï¿½ï¿½ï¿½×ºï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    /// <param name="type">¸®±× Å¸ÀÔ</param>
-    /// <param name="seed">·£´ý ½Ãµå</param>
+    /// <param name="type">ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½</param>
+    /// <param name="seed">ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½</param>
     public void Shuffle(LEAGUE type, int seed)
     {
         _isGameOver = false;
 
-        //½Ãµå ÃÊ±âÈ­
+        //ï¿½Ãµï¿½ ï¿½Ê±ï¿½È­
         Random.InitState(seed);
 
         int[] easy = _easy;
@@ -190,17 +203,25 @@ public class Game : MonoBehaviour
 
 
     /// <summary>
-    /// º¸µå°¡ ÁØºñµÇ±â Àü±îÁö´Â ÆÄ±« µÇÁö ¾ÊÀ½
+    /// ï¿½ï¿½ï¿½å°¡ ï¿½Øºï¿½Ç±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    /// <returns>ÁØºñ»óÅÂ</returns>
+    /// <returns>ï¿½Øºï¿½ï¿½ï¿½ï¿½</returns>
     public bool GetReady()
     {
         return _board.IsReady;
     }
 
 
-    public void AddScore(Vector2 position, int score)
+    public void AddScore(Vector2 position, int score, SCORE_TYPE type)
     {
+
+        if (_dicScore.ContainsKey(type))
+            _dicScore[type] += score;
+        else
+            _dicScore.Add(type, score);
+
+
+
         GameScore += score;
         _subScore -= score;
 
@@ -220,9 +241,11 @@ public class Game : MonoBehaviour
 
         if (_board.CompareBanana(_bananaDestroyCnt))
         {
-     
-            //Å¬¸®¾î º¸³Ê½º 
-            AddScore(Vector3.zero, Def.CLEAR_SCORE);
+
+            SoundManager.Instance.Play(SoundManager.SOUND_TRACK.CLEAR);
+
+            //Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê½ï¿½ 
+            AddScore(Vector3.zero, Def.CLEAR_SCORE,SCORE_TYPE.ClEAR);
 
             _mapIndex++;
 
@@ -243,29 +266,50 @@ public class Game : MonoBehaviour
                 int timeScore = (int)GameTimer;
                 if (timeScore < 0) timeScore = 0;
 
-                AddScore(Vector2.zero, timeScore);
-                result.Init(span.ToString(@"mm\:ss"), GameScore);
+                AddScore(Vector2.zero, timeScore,SCORE_TYPE.TIME);
+
+                int tmpScore = 0;
+
+                tmpScore += _invenMonkeys[0] * Def.MONKEY1_SCORE;
+                tmpScore += _invenMonkeys[1] * Def.MONKEY2_SCORE;
+                tmpScore += _invenMonkeys[2] * Def.MONKEY3_SCORE;
+                tmpScore += _invenMonkeys[3] * Def.MONKEY4_SCORE;
+                tmpScore += _invenMonkeys[4] * Def.MONKEY5_SCORE;
+
+                AddScore(Vector2.zero, tmpScore,SCORE_TYPE.MONKEY);
+
+                result.Init(new int[]{
+                    _dicScore[SCORE_TYPE.ClEAR],
+                    _dicScore[SCORE_TYPE.BANANA],
+                    _dicScore[SCORE_TYPE.TOKKEN],
+                    _dicScore[SCORE_TYPE.DESTROY],
+                    _dicScore[SCORE_TYPE.MONKEY],
+                    _dicScore[SCORE_TYPE.TIME],
+                    GameScore
+                    });
+
+                // result.Init(span.ToString(@"mm\:ss"), GameScore);
 
             }
         }
-        
+
     }
 
     bool _isGameOver = false;
 
     private void Update()
     {
-        if(!_isGameOver)
-        _gameUI.SetTimer((int)GameTimer);
+        if (!_isGameOver)
+            _gameUI.SetTimer((int)GameTimer);
 
         if (!_isGameOver)
         {
-             if(GameTimer < 0.0f)
-            _isGameOver = true;
+            if (GameTimer < 0.0f)
+                _isGameOver = true;
 
         }
 
-        
+
 
     }
 
@@ -306,7 +350,7 @@ public class Game : MonoBehaviour
         _mapIndex = 0;
         _loading.Show();
         _gameUI.SetStage(_mapIndex);
-        
+
         //Map Seed
         UnityEngine.Random.InitState(randomSeed);
 
@@ -320,9 +364,9 @@ public class Game : MonoBehaviour
 
         _bananaDestroyCnt = 0;
 
-        //MapLoad ¿Ï·á Ã¼Å© - ¸Ê ¿ÀºêÁ§Æ® »ý¼º ÇØ³õ±â
+        //MapLoad ï¿½Ï·ï¿½ Ã¼Å© - ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½Ø³ï¿½ï¿½ï¿½
         _board.Init(_mapIDList.ToArray(),
-            ()=> 
+            () =>
             {
                 _loading.CloseLoading(0.5f);
 
@@ -339,7 +383,7 @@ public class Game : MonoBehaviour
 
 
 
-IEnumerator loadDelayLoadMap(float delay)
+    IEnumerator loadDelayLoadMap(float delay)
     {
 
         yield return new WaitForSeconds(delay);
@@ -355,9 +399,9 @@ IEnumerator loadDelayLoadMap(float delay)
 
                    StartCoroutine(startAction());
                });
-        
+
     }
-    
+
 
 
 
@@ -365,23 +409,23 @@ IEnumerator loadDelayLoadMap(float delay)
     IEnumerator startAction()
     {
 
-        
+
         yield return new WaitForEndOfFrame();
-        //Ä«¸Þ¶ó À§Ä¡ »çÀÌÁî ¼¼ÆÃ
+        //Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         _board.SetCam();
         //SetResolution();
         //SetResolution();
 
         yield return new WaitForSeconds(1.0f);
 
-        //°ÔÀÓ½ÃÀÛ ¾×¼Ç
+        //ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½×¼ï¿½
         _board.PlayAction();
-        
+
 
         yield return new WaitForSeconds(1.0f);
 
         List<int> list = _board.GetMonkeyList(_mapIndex);
-        
+
 
         for (int i = 0; i < list.Count; ++i)
         {
@@ -390,8 +434,8 @@ IEnumerator loadDelayLoadMap(float delay)
         }
 
         yield return new WaitForSeconds(0.2f);
-        if(_targetIndex <0)
-        ChoiseCard(0);
+        if (_targetIndex < 0)
+            ChoiseCard(0);
     }
 
     public void AddMonkey(int monkeyID)
@@ -401,12 +445,15 @@ IEnumerator loadDelayLoadMap(float delay)
 
     }
 
-
+    public void ButtonPause()
+    {
+        UIManager.Instance.showPopup(Def.POPUP_PAUSE);
+    }
 
 
     public void ShootReady()
     {
-        if(_board.GetBullet() == null)
+        if (_board.GetBullet() == null)
             ChoiseCard(0);
     }
     public void ChoiseCard(int index)
@@ -415,12 +462,12 @@ IEnumerator loadDelayLoadMap(float delay)
     }
 
     /// <summary>
-    /// ¿ø¼þÀÌ ÀåÀü 
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     /// </summary>
     /// <param name="index"></param>
     public void Reload(int index)
     {
-        if(_board.SetReload(index))
+        if (_board.SetReload(index))
             _gameUI.SetMonkeyInfo(index);
     }
 
@@ -432,7 +479,7 @@ IEnumerator loadDelayLoadMap(float delay)
 
 
     /// <summary>
-    /// ÅÏ Á¾·á - ÀåÀü ÇÒ °´Ã¼°¡ ÀÖ´ÂÁö Ã¼Å© 
+    /// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã¼Å© 
     /// </summary>
     public void TunEnd()
     {
@@ -455,9 +502,9 @@ IEnumerator loadDelayLoadMap(float delay)
     }
 
 
-    private void OnTouch(TouchPhase phase, int id,float x, float y, float dx, float dy)
+    private void OnTouch(TouchPhase phase, int id, float x, float y, float dx, float dy)
     {
-        
+
         Vector3 touchPosition = CunverterTouchPoint(new Vector2(x, y));
         touchPosition = paserTouchToCamPoint(touchPosition);
 
@@ -474,7 +521,7 @@ IEnumerator loadDelayLoadMap(float delay)
                 break;
 
             case TouchPhase.Ended:
-           
+
 
                 if (_board.Shoot())
                 {
@@ -499,16 +546,16 @@ IEnumerator loadDelayLoadMap(float delay)
 
     public void UseMonkey(int index)
     {
-        
+
         _invenMonkeys[index]--;
-        
+
 
 
         _gameUI.UseMonkeyText(index, _invenMonkeys[index]);
 
         if (_invenMonkeys[index] <= 0)
             _gameUI.ActiveMonkey(index, false);
-        
+
     }
 
 

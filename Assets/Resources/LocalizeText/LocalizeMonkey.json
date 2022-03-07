@@ -1,0 +1,40 @@
+{
+  "Data": [
+    {
+      "ID": "1",
+      "Korean": "원숭이",
+      "English": "Monkey",
+      "Japanese": "Monkey",
+      "ChineseSimplified": "Monkey",
+      "ChineseTraditional": "Monkey",
+      "German": "Monkey",
+      "Spanish": "Monkey",
+      "French": "Monkey",
+      "Vietnamese": "Monkey",
+      "Thai": "Monkey",
+      "Russian": "Monkey",
+      "Italian": "Monkey",
+      "Portuguese": "Monkey",
+      "Turkish": "Monkey",
+      "Indonesian": "Monkey"
+    },
+    {
+      "ID": "2",
+      "Korean": "성공",
+      "English": "Sucess",
+      "Japanese": "Sucess",
+      "ChineseSimplified": "Sucess",
+      "ChineseTraditional": "Sucess",
+      "German": "Sucess",
+      "Spanish": "Sucess",
+      "French": "Sucess",
+      "Vietnamese": "Sucess",
+      "Thai": "Sucess",
+      "Russian": "Sucess",
+      "Italian": "Sucess",
+      "Portuguese": "Sucess",
+      "Turkish": "Sucess",
+      "Indonesian": "Sucess"
+    }
+  ]
+}

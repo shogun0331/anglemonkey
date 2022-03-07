@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Preload.unity
+    guid: fe97b7205d22b794ca2a1bba50beecd6
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Mobirix/Gdpr/Scene/GdprScene.unity
+    guid: 3e983f4933b2fc249aa5526547311150
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 6b06302d6caecd84d8ba19fd0c94188a
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: b3e6687dd0e2ef047a7d6bcccdaae088
   m_configObjects: {}

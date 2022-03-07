@@ -221,6 +221,7 @@ public class Shooter : MonoBehaviour
     {
         if (state != State.Aim) return;
 
+        SoundManager.Instance.Play(SoundManager.SOUND_TRACK.SHOOT);
 
         GameObject oj = loadPoolingObject(Def.PATH_EFFECT_DUST2, Def.EFFECT_DUST2);
         oj.transform.position = _aimPoint.position;

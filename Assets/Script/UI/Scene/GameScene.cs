@@ -66,11 +66,14 @@ public class GameScene : UIScreen
         _cardControl.InitCards();
     }
 
-
-
     public void ChiseCard(int index)
     {
         _cardControl.ChiseCard(index);
+    }
+
+    public void HideCard()
+    {
+        
     }
 
 

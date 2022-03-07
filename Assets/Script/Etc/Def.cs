@@ -4,9 +4,17 @@ public class Def
 
     public enum Monkey { Baby = 0,Gold, Papio, Macaca, Lemur, Nasalis, Hylobatidae, Gorilla }
 
-    public const int CLEAR_SCORE = 2000;
+    #region  SCORE
 
-    
+    public const int CLEAR_SCORE = 2000;
+    public const int MONKEY1_SCORE = 50;
+    public const int MONKEY2_SCORE = 75;
+    public const int MONKEY3_SCORE = 100;
+    public const int MONKEY4_SCORE = 125;
+    public const int MONKEY5_SCORE = 150;
+
+    #endregion
+
     public const string SCENE_AGREE = "Agree";
     public const string SCENE_GDPR = "Gdpr";
 
@@ -71,4 +79,7 @@ public class Def
     public const string POPP_SCORETUTORIAL = "ScoreTutorialPopup";
     public const string POPUP_RESULT = "ResultPopup";
     public const string POPUP_HOWTOPLAY = "HowToPlayPopup";
+    public const string POPUP_PAUSE = "PausePopup";
+    public const string POPUP_SETTING = "SettingPopup";
+    
 }

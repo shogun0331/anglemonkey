@@ -76,9 +76,9 @@ public class Brick : MonoBehaviour
     }
 
     /// <summary>
-    /// ³»ºÎ ¸Ê JSON ÆÄÀÏÀ» °­Á¦ÀûÀ¸·Î ¼öÁ¤ÇÑ °æ¿ì ÇÁ¸®ÆÕ µ¥ÀÌÅÍ¶û ºñ±³
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ JSON ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¶ï¿½ ï¿½ï¿½
     /// </summary>
-    /// <returns>µ¥ÀÌÅÍ º¯Á¶</returns>
+    /// <returns>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</returns>
     public bool CheckMemoryHack()
     {
         if (_model.Hp != _hp)                                                                                   return true;
@@ -92,10 +92,11 @@ public class Brick : MonoBehaviour
 
     private void DestroyBrick(float damage)
     {
+        SoundManager.Instance.Play(SoundManager.SOUND_TRACK.DESTROY);
 
         _isDestroy = true;
 
-        Game.I.AddScore(transform.position,_model.Score);
+        Game.I.AddScore(transform.position,_model.Score,Game.SCORE_TYPE.DESTROY);
         
         switch (MyTexture)
         {
@@ -110,7 +111,7 @@ public class Brick : MonoBehaviour
                 break;
         }
 
-        //¾Ö´Ï¸ÞÀÌ¼Ç ÇÒÁö °áÁ¤ 
+        //ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         if (damage > 10.0f &&  Random.value > 0.8f)
         {
             setTriger(true);
@@ -217,6 +218,9 @@ public class Brick : MonoBehaviour
         if (!Game.I.GetReady()) return;
         if (_isDestroy) return;
 
+        SoundManager.Instance.Play(SoundManager.SOUND_TRACK.COLLISION_RECV);
+
+
         float magnitude = coll.relativeVelocity.sqrMagnitude;
 
         Rigidbody2D rg = GetComponent<Rigidbody2D>();
@@ -225,7 +229,7 @@ public class Brick : MonoBehaviour
        
         float damage = 0.0f;
 
-        //´ë»óÀÇ Ãæµ¹ ¼Óµµ¿Í º»ÀÎÀÇ Ãæµ¹ ¼Óµµ Áß ´õ Å©±â°¡ Å«ÂÊÀ¸·Î º¯¼ö¸¦ ÇÒ´çÇÑ´Ù.
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½Óµï¿½ ï¿½ï¿½ ï¿½ï¿½ Å©ï¿½â°¡ Å«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ñ´ï¿½.
         damage = Mathf.Max(coll.relativeVelocity.magnitude * coll.rigidbody.mass, rg.velocity.magnitude * rg.mass);
         SetDamage(damage);
 

@@ -43,7 +43,7 @@ public class Banana : MonoBehaviour
 
         float damage = 0.0f;
 
-        //´ë»óÀÇ Ãæµ¹ ¼Óµµ¿Í º»ÀÎÀÇ Ãæµ¹ ¼Óµµ Áß ´õ Å©±â°¡ Å«ÂÊÀ¸·Î º¯¼ö¸¦ ÇÒ´çÇÑ´Ù.
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½Óµï¿½ ï¿½ï¿½ ï¿½ï¿½ Å©ï¿½â°¡ Å«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ñ´ï¿½.
         damage = Mathf.Max(coll.relativeVelocity.magnitude * coll.rigidbody.mass, rg.velocity.magnitude * rg.mass);
 
         float hp = _hp - damage;
@@ -62,15 +62,16 @@ public class Banana : MonoBehaviour
         if (_isDestroy) return;
         _isDestroy = true;
 
+
+        SoundManager.Instance.Play(SoundManager.SOUND_TRACK.BANANA);
+
         GameObject oj =  loadPoolingObject(Def.PATH_EFFECT_WOOD, Def.EFFECT_WOOD);
         oj.transform.position = transform.position;
 
         Game.I.DestroyBanana();
-        Game.I.AddScore(transform.position, _score);
+        Game.I.AddScore(transform.position, _score,Game.SCORE_TYPE.BANANA);
 
         Destroy(gameObject);
-        
-
     }
 
 
